@@ -1,0 +1,12 @@
+{
+  "config": {
+
+  },
+  "entity": {
+    "nymo": {
+      "powerBoiler": {
+        "title": "Stroom boiler"
+      }
+    }
+  }
+}
