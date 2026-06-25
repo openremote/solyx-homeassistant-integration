@@ -2,7 +2,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from homeassistant.components.solyx_energy import DOMAIN, async_setup
+from homeassistant.components.solyx_energy import DOMAIN, async_setup_entry
 
 @pytest.mark.asyncio
 async def test_setup_returns_true():
