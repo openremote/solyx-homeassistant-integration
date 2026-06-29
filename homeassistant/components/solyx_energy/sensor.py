@@ -13,14 +13,30 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
 from .coordinator import SolyxEnergyCoordinator
-from .const import ATTRIBUTE_NOTES
+from .const import ATTRIBUTE_POWER_BOILER, ATTRIBUTE_ENERGY_BOILER, ATTRIBUTE_OPERATING_MODE, ATTRIBUTE_GRID_POWER, ATTRIBUTE_CONTROL_VALUE
 from .entity import SolyxNymoEntity
 
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
-        key=ATTRIBUTE_NOTES,
-        translation_key=ATTRIBUTE_NOTES,
+        key=ATTRIBUTE_POWER_BOILER,
+        translation_key=ATTRIBUTE_POWER_BOILER,
     ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_ENERGY_BOILER,
+        translation_key=ATTRIBUTE_ENERGY_BOILER,
+    ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_OPERATING_MODE,
+        translation_key=ATTRIBUTE_OPERATING_MODE,
+    ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_GRID_POWER,
+        translation_key=ATTRIBUTE_GRID_POWER,
+    ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_CONTROL_VALUE,
+        translation_key=ATTRIBUTE_CONTROL_VALUE,
+    )
 )
 
 async def async_setup_entry(

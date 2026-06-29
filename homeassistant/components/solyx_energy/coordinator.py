@@ -13,7 +13,11 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import SolyxEnergyApiClient, SolyxEnergyTokenError, SolyxEnergyDataError
 from .const import (
-    ATTRIBUTE_NOTES,
+    ATTRIBUTE_POWER_BOILER,
+    ATTRIBUTE_ENERGY_BOILER,
+    ATTRIBUTE_OPERATING_MODE,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_CONTROL_VALUE,
     DATA_INTERVAL_SECONDS,
     DOMAIN
 )
@@ -24,7 +28,11 @@ _LOGGER = logging.getLogger(__name__)
 @dataclass
 class SolyxEnergyData:
     """Snapshot of all Solyx Energy integration values."""
-    notes: str | None
+    powerBoiler: int | None
+    energyBoiler: int | None
+    operatingMode: str | None
+    gridPower: int | None
+    controlValue: str | None
 
 class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
     """Coordinator that fetches and sends data over HTTPS"""
@@ -58,5 +66,9 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
 
         # _LOGGER.debug(f"Device data: ${nymo_data}")
         return SolyxEnergyData(
-            notes=_parse_attr_value(nymo_data, ATTRIBUTE_NOTES)
+            powerBoiler=_parse_attr_value(nymo_data, ATTRIBUTE_POWER_BOILER),
+            energyBoiler=_parse_attr_value(nymo_data, ATTRIBUTE_ENERGY_BOILER),
+            operatingMode=_parse_attr_value(nymo_data, ATTRIBUTE_OPERATING_MODE),
+            gridPower=_parse_attr_value(nymo_data, ATTRIBUTE_GRID_POWER),
+            controlValue=_parse_attr_value(nymo_data, ATTRIBUTE_CONTROL_VALUE),
         )

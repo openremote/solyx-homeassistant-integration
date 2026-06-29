@@ -4,8 +4,20 @@
   },
   "entity": {
     "sensor": {
-      "notes": {
-        "name": "Notes"
+      "powerBoiler": {
+        "name": "Power boiler"
+      },
+      "energyBoiler": {
+        "name": "Energy to boiler"
+      },
+      "operatingMode": {
+        "name": "Operating mode"
+      },
+      "gridPower": {
+        "name": "Grid power"
+      },
+      "controlValue": {
+        "name": "Control value"
       }
     }
   }

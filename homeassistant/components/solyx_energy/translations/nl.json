@@ -4,8 +4,20 @@
   },
   "entity": {
     "sensor": {
-      "notes": {
-        "name": "Notities"
+      "powerBoiler": {
+        "name": "Verbruik boiler"
+      },
+      "energyBoiler": {
+        "name": "Stroom naar boiler"
+      },
+      "operatingMode": {
+        "name": "Operatiemodus"
+      },
+      "gridPower": {
+        "name": "Stroom van het net"
+      },
+      "controlValue": {
+        "name": "Control value"
       }
     }
   }

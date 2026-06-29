@@ -13,4 +13,8 @@ CONF_CLIENT_SECRET = "client_secret"
 CONF_NYMO_DEVICE_ID = "nymo_device_id"
 
 # Device attributes
-ATTRIBUTE_NOTES = "notes"
+ATTRIBUTE_POWER_BOILER = "powerBoiler"
+ATTRIBUTE_ENERGY_BOILER = "energyBoiler"
+ATTRIBUTE_OPERATING_MODE = "operatingMode"
+ATTRIBUTE_GRID_POWER = "gridPower"
+ATTRIBUTE_CONTROL_VALUE = "controlValue"
