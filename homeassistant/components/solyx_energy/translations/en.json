@@ -1,22 +1,25 @@
 {
   "config": {
-
+    "error": {
+      "invalid_auth": "Could not authorize using your credentials. Please verify the Client ID, Client Secret, and your device ID.",
+      "data_error": "Couldn't retrieve device data due to an communication error.",
+    },
   },
   "entity": {
     "sensor": {
-      "powerBoiler": {
+      "power_boiler": {
         "name": "Power boiler"
       },
-      "energyBoiler": {
+      "energy_boiler": {
         "name": "Energy to boiler"
       },
-      "operatingMode": {
+      "operating_mode": {
         "name": "Operating mode"
       },
-      "gridPower": {
+      "grid_power": {
         "name": "Grid power"
       },
-      "controlValue": {
+      "control_value": {
         "name": "Control value"
       }
     }

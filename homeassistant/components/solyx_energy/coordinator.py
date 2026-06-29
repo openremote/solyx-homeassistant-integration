@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-
 from dataclasses import dataclass
 from datetime import timedelta
 
@@ -21,18 +20,18 @@ from .const import (
     DATA_INTERVAL_SECONDS,
     DOMAIN
 )
-from .util import _parse_attr_value
+from .util import parse_attr_value, parse_float
 
 _LOGGER = logging.getLogger(__name__)
 
 @dataclass
 class SolyxEnergyData:
     """Snapshot of all Solyx Energy integration values."""
-    powerBoiler: int | None
-    energyBoiler: int | None
+    powerBoiler: float | None
+    energyBoiler: float | None
     operatingMode: str | None
-    gridPower: int | None
-    controlValue: str | None
+    gridPower: float | None
+    controlValue: float | None
 
 class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
     """Coordinator that fetches and sends data over HTTPS"""
@@ -55,7 +54,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.identifier = device_id
 
 
-    async def _async_update_data(self) -> None:
+    async def _async_update_data(self) -> SolyxEnergyData:
         """Function to update the device entities, by fetching data using the SolyxEnergyApiClient class"""
         try:
             nymo_data = await self.api_client.async_get_asset_data(self.identifier)
@@ -66,9 +65,9 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
 
         # _LOGGER.debug(f"Device data: ${nymo_data}")
         return SolyxEnergyData(
-            powerBoiler=_parse_attr_value(nymo_data, ATTRIBUTE_POWER_BOILER),
-            energyBoiler=_parse_attr_value(nymo_data, ATTRIBUTE_ENERGY_BOILER),
-            operatingMode=_parse_attr_value(nymo_data, ATTRIBUTE_OPERATING_MODE),
-            gridPower=_parse_attr_value(nymo_data, ATTRIBUTE_GRID_POWER),
-            controlValue=_parse_attr_value(nymo_data, ATTRIBUTE_CONTROL_VALUE),
+            powerBoiler=parse_float(nymo_data, ATTRIBUTE_POWER_BOILER),
+            energyBoiler=parse_float(nymo_data, ATTRIBUTE_ENERGY_BOILER),
+            operatingMode=parse_attr_value(nymo_data, ATTRIBUTE_OPERATING_MODE),
+            gridPower=parse_float(nymo_data, ATTRIBUTE_GRID_POWER),
+            controlValue=parse_float(nymo_data, ATTRIBUTE_CONTROL_VALUE),
         )

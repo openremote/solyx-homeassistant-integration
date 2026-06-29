@@ -35,7 +35,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            await self.async_set_unique_id(user_input[CONF_CLIENT_ID])
+            await self.async_set_unique_id(user_input[CONF_NYMO_DEVICE_ID])
             self._abort_if_unique_id_configured()
 
             try:

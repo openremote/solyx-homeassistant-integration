@@ -20,18 +20,29 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=ATTRIBUTE_POWER_BOILER,
         translation_key=ATTRIBUTE_POWER_BOILER,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_ENERGY_BOILER,
         translation_key=ATTRIBUTE_ENERGY_BOILER,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_OPERATING_MODE,
         translation_key=ATTRIBUTE_OPERATING_MODE,
+        device_class=SensorDeviceClass.ENUM,
+        options=["DIRECT", "MUTED"],
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_GRID_POWER,
         translation_key=ATTRIBUTE_GRID_POWER,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_CONTROL_VALUE,

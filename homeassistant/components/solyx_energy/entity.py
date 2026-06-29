@@ -19,6 +19,5 @@ class SolyxNymoEntity(CoordinatorEntity[SolyxEnergyCoordinator]):
             identifiers={(DOMAIN, coordinator.identifier)},
             name="Nymo",
             manufacturer="Solyx Energy",
-            model="Nymo",
-            # TODO: Put in device information like serial number and software version?
+            model="Nymo"
         )

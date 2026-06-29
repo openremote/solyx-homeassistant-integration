@@ -85,7 +85,7 @@ class SolyxEnergyApiClient:
                     timeout=aiohttp.ClientTimeout(total=10)
             ) as response:
                 if response.status in (401, 403):
-                    self._access_token = None
+                    self._access_token = None # Removing expired access token. Not automatically retrying request; we wait for the DATA_INTERVAL_SECONDS to elapse.
                     raise SolyxEnergyDataError("Failed to retrieve asset data from Solyx Energy cloud; you were unauthorized.")
                 if response.status != 200:
                     raise SolyxEnergyDataError(f"Failed to retrieve asset data from Solyx Energy cloud; error {response.status}")
