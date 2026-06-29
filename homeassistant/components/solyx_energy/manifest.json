@@ -3,8 +3,9 @@
   "name": "Solyx Energy",
   "codeowners": ["@openremote", "@MartinaeyNL"],
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/solyx_energy",
+  "documentation": "https://www.home-assistant.io/integrations/solyx_energy/",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "requirements": []
+  "requirements": [],
+  "version": "0.0.1"
 }

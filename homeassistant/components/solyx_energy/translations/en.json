@@ -3,9 +3,9 @@
 
   },
   "entity": {
-    "nymo": {
-      "powerBoiler": {
-        "title": "Power boiler"
+    "sensor": {
+      "notes": {
+        "name": "Notes"
       }
     }
   }

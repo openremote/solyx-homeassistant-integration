@@ -7,6 +7,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import SolyxEnergyApiClient
+from .const import (
+    CONF_CLIENT_ID,
+    CONF_CLIENT_SECRET,
+    CONF_NYMO_DEVICE_ID
+)
 from .coordinator import SolyxEnergyCoordinator
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
@@ -14,18 +19,26 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 type SolyxEnergyConfigEntry = ConfigEntry[SolyxEnergyCoordinator]
 
 async def async_setup_entry(hass: HomeAssistant, entry: SolyxEnergyConfigEntry) -> bool:
-    """Set up Solyx Energy device from a config entry."""
+    """Init function upon Solyx Energy device setup from a config entry."""
     session = async_get_clientsession(hass)
-    apiClient = SolyxEnergyApiClient()
-
+    api_client = SolyxEnergyApiClient(
+        session=session,
+        client_id=entry.data[CONF_CLIENT_ID],
+        client_secret=entry.data[CONF_CLIENT_SECRET],
+    )
+    coordinator = SolyxEnergyCoordinator(
+        hass=hass,
+        api_client=api_client,
+        device_id=entry.data[CONF_NYMO_DEVICE_ID],
+        config_entry=entry
+    )
+    await coordinator.async_config_entry_first_refresh() # Initial data fetching
+    entry.runtime_data = coordinator # Store the coordinator
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS) # Register sensor entities
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: SolyxEnergyConfigEntry) -> bool:
     """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload_ok:
-        return True
-
-    return False
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
