@@ -5,7 +5,7 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
-    SensorStateClass
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -13,7 +13,13 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
 from .coordinator import SolyxEnergyCoordinator
-from .const import ATTRIBUTE_POWER_BOILER, ATTRIBUTE_ENERGY_BOILER, ATTRIBUTE_OPERATING_MODE, ATTRIBUTE_GRID_POWER, ATTRIBUTE_CONTROL_VALUE
+from .const import (
+    ATTRIBUTE_POWER_BOILER,
+    ATTRIBUTE_ENERGY_BOILER,
+    ATTRIBUTE_OPERATING_MODE,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_CONTROL_VALUE,
+)
 from .entity import SolyxNymoEntity
 
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
@@ -23,7 +29,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
-        native_unit_of_measurement="W"
+        native_unit_of_measurement="W",
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_ENERGY_BOILER,
@@ -31,7 +37,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL,
         suggested_display_precision=0,
-        native_unit_of_measurement="Wh"
+        native_unit_of_measurement="Wh",
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_OPERATING_MODE,
@@ -45,35 +51,36 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
-        native_unit_of_measurement="W"
+        native_unit_of_measurement="W",
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_CONTROL_VALUE,
         translation_key=ATTRIBUTE_CONTROL_VALUE,
         state_class=SensorStateClass.MEASUREMENT,
-        native_unit_of_measurement="%"
-    )
+        native_unit_of_measurement="%",
+    ),
 )
 
 async def async_setup_entry(
         hass: HomeAssistant,
         entry: ConfigEntry,
-        async_add_entities: AddEntitiesCallback
+        async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Solyx Energy sensors from a config entry"""
+    """Set up Solyx Energy sensors from a config entry."""
     coordinator: SolyxEnergyCoordinator = entry.runtime_data
     async_add_entities(
         SolyxSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
     )
 
 class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
-    """A single Solyx Energy entity"""
+    """A single Solyx Energy entity."""
 
     def __init__(
             self,
             coordinator: SolyxEnergyCoordinator,
-            description: SensorEntityDescription
+            description: SensorEntityDescription,
     ) -> None:
+        """Initialize a Solyx Energy entity."""
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_unique_id = f"{coordinator.device_id}-{description.key}"

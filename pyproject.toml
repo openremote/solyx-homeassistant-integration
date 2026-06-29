@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "solyx-homeassistant-integration"
 version = "1.0.0"
 description = "Solyx Energy integration for Home Assistant"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "homeassistant==2026.6.4",
 ]
@@ -15,8 +15,42 @@ dependencies = [
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.24.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+# Mirrors the lint configuration used by home-assistant/core so that
+# local checks match what reviewers run on submission.
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",   # one-blank-line-before-class (conflicts with D211)
+    "D213",   # multi-line-summary-second-line (conflicts with D212)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = [
+    "S101",    # allow assert in tests
+    "ANN",     # no type annotations required in tests
+    "D",       # no docstrings required in tests
+    "PLR2004", # magic values OK in tests
+]
+
+# Mypy configuration
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false

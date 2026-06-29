@@ -14,6 +14,7 @@ class SolyxNymoEntity(CoordinatorEntity[SolyxEnergyCoordinator]):
     _attr_has_entity_name = True
 
     def __init__(self, coordinator: SolyxEnergyCoordinator) -> None:
+        """Initialize a Solyx Nymo entity."""
         super().__init__(coordinator)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, coordinator.device_id)},

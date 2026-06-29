@@ -1,9 +1,29 @@
 {
   "config": {
+    "step": {
+      "user": {
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client Secret",
+          "nymo_device_id": "Nymo Device ID"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate Solyx Energy",
+        "description": "Your credentials are no longer valid for device {device_id}. Re-enter your Client ID and Client Secret.",
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client Secret"
+        }
+      }
+    },
     "error": {
       "invalid_auth": "Could not authorize using your credentials. Please verify the Client ID, Client Secret, and your device ID.",
-      "data_error": "Couldn't retrieve device data due to an communication error."
+      "data_error": "Couldn't retrieve device data due to a communication error."
     },
+    "abort": {
+      "reauth_successful": "Re-authentication was successful."
+    }
   },
   "entity": {
     "sensor": {

@@ -1,8 +1,28 @@
 {
   "config": {
+    "step": {
+      "user": {
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client Secret",
+          "nymo_device_id": "Nymo apparaat-ID"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Solyx Energy opnieuw verifiëren",
+        "description": "Uw inloggegevens zijn niet meer geldig voor apparaat {device_id}. Voer opnieuw uw Client ID en Client Secret in.",
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client Secret"
+        }
+      }
+    },
     "error": {
       "invalid_auth": "Er is iets fout gegaan met uw logingegevens. Controleer of het Client ID, Client Secret, en het apparaat ID correct zijn.",
-      "data_error": "Kon de apparaat gegevens niet verkrijgen door een fout in de communicatie."
+      "data_error": "Kon de apparaatgegevens niet verkrijgen door een fout in de communicatie."
+    },
+    "abort": {
+      "reauth_successful": "Opnieuw verifiëren is gelukt."
     }
   },
   "entity": {
@@ -20,7 +40,7 @@
         "name": "Stroom van het net"
       },
       "control_value": {
-        "name": "Control value"
+        "name": "Regelwaarde"
       }
     }
   }

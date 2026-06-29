@@ -1,1 +1,1 @@
-"""Tests for the Solyx Energy integration"""
+"""Tests for the Solyx Energy integration."""

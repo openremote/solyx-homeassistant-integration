@@ -1,5 +1,5 @@
+"""Utility file with several parsing functions for the Solyx Energy Nymo integration."""
 from typing import Any
-
 import logging
 
 _LOGGER = logging.getLogger(__name__)
