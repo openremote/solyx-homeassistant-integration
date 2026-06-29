@@ -46,7 +46,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "data_error"
             else:
                 return self.async_create_entry(
-                    title="Nymo device",
+                    title="My Nymo",
                     data=user_input
                 )
 

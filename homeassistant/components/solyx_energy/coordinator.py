@@ -51,19 +51,19 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             update_interval=timedelta(seconds=DATA_INTERVAL_SECONDS)
         )
         self.api_client = api_client
-        self.identifier = device_id
+        self.device_id = device_id
 
 
     async def _async_update_data(self) -> SolyxEnergyData:
         """Function to update the device entities, by fetching data using the SolyxEnergyApiClient class"""
         try:
-            nymo_data = await self.api_client.async_get_asset_data(self.identifier)
+            nymo_data = await self.api_client.async_get_asset_data(self.device_id)
         except SolyxEnergyTokenError as err:
             raise ConfigEntryAuthFailed from err
         except SolyxEnergyDataError as err:
             raise UpdateFailed(f"API error: {err}") from err
 
-        # _LOGGER.debug(f"Device data: ${nymo_data}")
+        # _LOGGER.debug("Device data: %s", nymo_data)
         return SolyxEnergyData(
             powerBoiler=parse_float(nymo_data, ATTRIBUTE_POWER_BOILER),
             energyBoiler=parse_float(nymo_data, ATTRIBUTE_ENERGY_BOILER),

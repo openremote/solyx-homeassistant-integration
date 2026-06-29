@@ -2,7 +2,7 @@
   "config": {
     "error": {
       "invalid_auth": "Er is iets fout gegaan met uw logingegevens. Controleer of het Client ID, Client Secret, en het apparaat ID correct zijn.",
-      "data_error": "Kon de apparaat gegevens niet verkrijgen door een fout in de communicatie.",
+      "data_error": "Kon de apparaat gegevens niet verkrijgen door een fout in de communicatie."
     }
   },
   "entity": {

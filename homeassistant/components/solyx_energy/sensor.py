@@ -23,13 +23,15 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
+        native_unit_of_measurement="W"
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_ENERGY_BOILER,
         translation_key=ATTRIBUTE_ENERGY_BOILER,
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL,
         suggested_display_precision=0,
+        native_unit_of_measurement="Wh"
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_OPERATING_MODE,
@@ -43,10 +45,13 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
+        native_unit_of_measurement="W"
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_CONTROL_VALUE,
         translation_key=ATTRIBUTE_CONTROL_VALUE,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement="%"
     )
 )
 
@@ -71,7 +76,7 @@ class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
     ) -> None:
         super().__init__(coordinator)
         self.entity_description = description
-        self._attr_unique_id = f"{coordinator.identifier}-{description.key}"
+        self._attr_unique_id = f"{coordinator.device_id}-{description.key}"
 
     @property
     def native_value(self) -> StateType | None:

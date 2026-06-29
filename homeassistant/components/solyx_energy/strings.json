@@ -2,7 +2,7 @@
   "config": {
     "error": {
       "invalid_auth": "Could not authorize using your credentials. Please verify the Client ID, Client Secret, and your device ID.",
-      "data_error": "Couldn't retrieve device data due to an communication error.",
+      "data_error": "Couldn't retrieve device data due to an communication error."
     },
   },
   "entity": {
