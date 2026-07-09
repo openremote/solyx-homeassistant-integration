@@ -1,12 +1,13 @@
 """Utility file with several parsing functions for the Solyx Energy Nymo integration."""
 
+from __future__ import annotations
+
 import logging
-from typing import Any
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def parse_attr_value(raw: dict, attr_name: str) -> Any:
+def parse_attr_value(raw: dict, attr_name: str) -> object:
     """Extract value from an Solyx device attribute."""
     attributes = raw.get("attributes") or {}
     val = attributes.get(attr_name, {}).get("value")

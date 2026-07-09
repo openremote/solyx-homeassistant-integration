@@ -5,9 +5,8 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import TYPE_CHECKING
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -28,18 +27,22 @@ from .const import (
 )
 from .util import parse_attr_value, parse_float
 
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+
 _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
 class SolyxEnergyData:
-    """Snapshot of all Solyx Energy integration values."""
+    """Hold a snapshot of all Solyx Energy integration values, using the internal Solyx platform name."""
 
-    powerBoiler: float | None
-    energyBoiler: float | None
-    operatingMode: str | None
-    gridPower: float | None
-    controlValue: float | None
+    powerBoiler: float | None     # noqa: N815
+    energyBoiler: float | None    # noqa: N815
+    operatingMode: str | None          # noqa: N815
+    gridPower: float | None       # noqa: N815
+    controlValue: float | None    # noqa: N815
 
 
 class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
@@ -52,7 +55,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         device_id: str,
         config_entry: ConfigEntry,
     ) -> None:
-        """Initializes the main coordinator for the Solyx Energy integration."""
+        """Initialize the main coordinator for the Solyx Energy integration."""
         super().__init__(
             hass,
             logger=_LOGGER,
@@ -64,7 +67,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.device_id = device_id
 
     async def _async_update_data(self) -> SolyxEnergyData:
-        """Function to update the device entities, by fetching data using the SolyxEnergyApiClient class."""
+        """Fetch data with the SolyxEnergyApiClient class and update the device entities accordingly."""
         try:
             nymo_data = await self.api_client.async_get_asset_data(self.device_id)
         except SolyxEnergyAuthError as err:

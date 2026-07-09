@@ -33,7 +33,11 @@ select = ["ALL"]
 ignore = [
     "D203",   # one-blank-line-before-class (conflicts with D211)
     "D213",   # multi-line-summary-second-line (conflicts with D212)
-    "E501"    # allow long lines for when applicable for readability purposes
+    "E501",   # allow long lines for when applicable for readability purposes
+    "EM101",  # make exception for requiring variables instead of string literals
+    "EM102",  # make exception for requiring variables instead of f-string
+    "EM103",  # make exception for requiring variables instead of .format()
+    "TRY003"  # make exception for inlining error messages
 ]
 
 [tool.ruff.lint.per-file-ignores]

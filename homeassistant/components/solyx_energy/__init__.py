@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import SolyxEnergyApiClient
-from .const import (
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    CONF_NYMO_DEVICE_ID,
-)
+from .const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_NYMO_DEVICE_ID
 from .coordinator import SolyxEnergyCoordinator
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
@@ -41,7 +41,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: SolyxEnergyConfigEntry) 
 
 
 async def async_unload_entry(
-    hass: HomeAssistant, entry: SolyxEnergyConfigEntry
+    hass: HomeAssistant, entry: SolyxEnergyConfigEntry,
 ) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)

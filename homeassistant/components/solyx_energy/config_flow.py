@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
@@ -20,19 +19,17 @@ from .api import (
     SolyxEnergyDataError,
     SolyxEnergyTokenError,
 )
-from .const import (
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    CONF_NYMO_DEVICE_ID,
-    DOMAIN,
-)
+from .const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_NYMO_DEVICE_ID, DOMAIN
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 # Schema definition for the initial user setup
 STEP_USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
         vol.Required(CONF_CLIENT_SECRET): TextSelector(
-            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+            TextSelectorConfig(type=TextSelectorType.PASSWORD),
         ),
         vol.Required(CONF_NYMO_DEVICE_ID): TextSelector(),
     },
@@ -45,7 +42,7 @@ STEP_REAUTH_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
         vol.Required(CONF_CLIENT_SECRET): TextSelector(
-            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+            TextSelectorConfig(type=TextSelectorType.PASSWORD),
         ),
     },
 )
@@ -87,7 +84,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_reauth(
         self,
-        entry_data: Mapping[str, Any],
+        _entry_data: Mapping[str, Any],
     ) -> ConfigFlowResult:
         """Handle the reauthentication step when users provide incorrect credentials."""
         self._reauth_entry = self._get_reauth_entry()

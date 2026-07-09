@@ -39,7 +39,7 @@ class SolyxEnergyApiClient:
         client_id: str,
         client_secret: str,
     ) -> None:
-        """Initializes the Solyx Energy API client."""
+        """Initialize the Solyx Energy API client."""
         self._session = session
         self._client_id = client_id
         self._client_secret = client_secret
@@ -47,7 +47,7 @@ class SolyxEnergyApiClient:
         self._token_expiry: float = 0.0
 
     async def _async_update_access_token(self) -> None:
-        """Function that obtains the access token from the Keycloak HTTP token endpoint."""
+        """Obtain the access token from the Keycloak HTTP token endpoint."""
         if self._access_token and time.monotonic() < self._token_expiry - 30:
             _LOGGER.debug("Access token still valid, skipping refresh.")
             return
@@ -83,11 +83,11 @@ class SolyxEnergyApiClient:
         return
 
     def _get_auth_headers(self) -> dict[str, str]:
-        """Retrieves the authorization header for HTTP requests to the Solyx Energy cloud environment."""
+        """Retrieve the authorization header for HTTP requests to the Solyx Energy cloud environment."""
         return {"Authorization": f"Bearer {self._access_token}"}
 
     async def async_get_asset_data(self, asset_id: str) -> dict[str, Any]:
-        """Fetches asset/device data from the Solyx Energy cloud environment."""
+        """Fetch asset/device data from the Solyx Energy cloud environment."""
         await self._async_update_access_token()
 
         request_url = f"{BASE_URL}/api/{REALM_ID}/asset/{asset_id}"
