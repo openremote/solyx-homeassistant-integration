@@ -73,7 +73,8 @@ async def async_setup_entry(
     """Set up Solyx Energy sensors from a config entry."""
     coordinator: SolyxEnergyCoordinator = entry.runtime_data
     async_add_entities(
-        SolyxSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
+        SolyxSensorEntity(coordinator, description)
+        for description in SENSOR_DESCRIPTIONS
     )
 
 

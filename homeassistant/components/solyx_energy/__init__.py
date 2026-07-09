@@ -40,6 +40,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: SolyxEnergyConfigEntry) 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: SolyxEnergyConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: SolyxEnergyConfigEntry
+) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)

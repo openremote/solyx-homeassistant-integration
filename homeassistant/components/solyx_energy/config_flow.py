@@ -31,7 +31,9 @@ from .const import (
 STEP_USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
-        vol.Required(CONF_CLIENT_SECRET): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
+        vol.Required(CONF_CLIENT_SECRET): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+        ),
         vol.Required(CONF_NYMO_DEVICE_ID): TextSelector(),
     },
 )
@@ -42,7 +44,9 @@ STEP_USER_SCHEMA = vol.Schema(
 STEP_REAUTH_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
-        vol.Required(CONF_CLIENT_SECRET): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
+        vol.Required(CONF_CLIENT_SECRET): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+        ),
     },
 )
 
@@ -53,7 +57,8 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(
-        self, user_input: dict[str, Any] | None = None,
+        self,
+        user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Handle the initial step when setting up the integration."""
         errors: dict[str, str] = {}
@@ -81,14 +86,16 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_reauth(
-        self, entry_data: Mapping[str, Any],
+        self,
+        entry_data: Mapping[str, Any],
     ) -> ConfigFlowResult:
         """Handle the reauthentication step when users provide incorrect credentials."""
         self._reauth_entry = self._get_reauth_entry()
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
-        self, user_input: dict[str, Any] | None = None,
+        self,
+        user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Prompts a dialog that asks the user to re-enter credentials."""
         errors: dict[str, str] = {}
