@@ -131,6 +131,9 @@ class SolyxEnergyApiClient:
                     raise SolyxEnergyAuthError("Failed to write device data to Solyx Energy cloud; unauthorized.") from None
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; error {response.status}") from None
+
+                _LOGGER.debug(f"{attribute_name} has successfully been updated to {value}.")
+
         except aiohttp.ClientError as err:
             raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; {err}") from err
         except TimeoutError as err:
