@@ -30,6 +30,10 @@ class SolyxEnergyDataError(SolyxEnergyError):
     """Error during data retrieval from the Solyx Energy cloud environment."""
 
 
+class SolyxEnergyWriteError(SolyxEnergyError):
+    """Error when pushing a value to the Solyx Energy cloud environment."""
+
+
 class SolyxEnergyApiClient:
     """HTTP API client with OAuth2 authentication to the Solyx Energy cloud environment."""
 
@@ -97,9 +101,7 @@ class SolyxEnergyApiClient:
                 headers=self._get_auth_headers(),
             ) as response:
                 if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
-                    self._access_token = (
-                        None  # Invalidate token so next poll re-authenticates.
-                    )
+                    self._access_token = None
                     raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.") from None
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}") from None
@@ -111,6 +113,28 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyDataError("Failed to retrieve device data from Solyx Energy cloud; request timed out.") from err
         except ValueError as err:
             raise SolyxEnergyDataError(f"Failed to retrieve device data due to a parsing error: {err}") from err
+
+    async def async_set_asset_attribute(
+            self, asset_id: str, attribute_name: str, value: Any
+    ) -> None:
+        """Push a new attribute value to the Solyx Energy cloud environment."""
+        await self._async_update_access_token()
+        request_url = f"{BASE_URL}/api/{REALM_ID}/asset/{asset_id}/attribute/{attribute_name}"
+        try:
+            async with self._session.put(
+                request_url,
+                headers={**self._get_auth_headers(), "Content-Type": "application/json"},
+                json=value
+            ) as response:
+                if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+                    self._access_token = None
+                    raise SolyxEnergyAuthError("Failed to write device data to Solyx Energy cloud; unauthorized.") from None
+                if response.status != HTTPStatus.OK:
+                    raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; error {response.status}") from None
+        except aiohttp.ClientError as err:
+            raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; {err}") from err
+        except TimeoutError as err:
+            raise SolyxEnergyWriteError("Failed to write device data to Solyx Energy cloud; request timed out.") from err
 
     async def async_test_connection(self, device_id: str) -> None:
         """Validate credentials and the existence of the Device ID by fetching data, and catching any HTTP errors."""
