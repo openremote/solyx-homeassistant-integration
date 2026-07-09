@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from http import HTTPStatus
 import logging
 import time
-from http import HTTPStatus
-from typing import Any
+from typing import Any, cast
 
 import aiohttp
 
@@ -103,7 +103,7 @@ class SolyxEnergyApiClient:
                     raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.") from None
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}") from None
-                return await response.json()
+                return cast("dict[str, Any]", await response.json())
 
         except aiohttp.ClientError as err:
             raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; {err}") from err

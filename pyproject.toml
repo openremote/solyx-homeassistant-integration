@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "solyx-homeassistant-integration"
 version = "1.0.0"
 description = "Solyx Energy integration for Home Assistant"
-requires-python = ">=3.14"
+requires-python = ">=3.14.2"
 dependencies = [
-    "homeassistant==2026.6.4",
+    "homeassistant>=2026.6.4",
 ]
 
 [project.optional-dependencies]
@@ -23,10 +23,11 @@ dev = [
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
-# Mirrors the lint configuration used by home-assistant/core so that
-# local checks match what reviewers run on submission.
+# Inspired by the lint configuration used by home-assistant/core, with additional stricter practices.
+# Uses ruff + mypy (instead of codespell/pylint)
 [tool.ruff]
 target-version = "py314"
+required-version = ">=0.15.20"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -47,6 +48,22 @@ ignore = [
     "D",       # no docstrings required in tests
     "PLR2004", # magic values OK in tests
 ]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["homeassistant"]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+voluptuous = "vol"
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
 
 # Mypy configuration
 [tool.mypy]

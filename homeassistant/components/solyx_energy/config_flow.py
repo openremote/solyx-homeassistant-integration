@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import voluptuous as vol
+
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
@@ -68,7 +69,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self._validate_input(user_input)
             except SolyxEnergyAuthError:
                 errors["base"] = "invalid_auth"
-            except SolyxEnergyTokenError, SolyxEnergyDataError:
+            except (SolyxEnergyTokenError, SolyxEnergyDataError):
                 errors["base"] = "data_error"
             else:
                 return self.async_create_entry(
@@ -107,7 +108,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self._validate_input(merged_input)
             except SolyxEnergyAuthError:
                 errors["base"] = "invalid_auth"
-            except SolyxEnergyTokenError, SolyxEnergyDataError:
+            except (SolyxEnergyTokenError, SolyxEnergyDataError):
                 errors["base"] = "data_error"
             else:
                 return self.async_update_reload_and_abort(
