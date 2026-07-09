@@ -38,16 +38,20 @@
       "energyBoiler": {
         "name": "Stroom naar boiler"
       },
+      "gridPower": {
+        "name": "Stroom van het net"
+      }
+    },
+    "select": {
       "operatingMode": {
         "name": "Operatiemodus",
         "state": {
           "DIRECT": "Direct",
           "MUTED": "Muted"
         }
-      },
-      "gridPower": {
-        "name": "Stroom van het net"
-      },
+      }
+    },
+    "number": {
       "controlValue": {
         "name": "Regelwaarde"
       }

@@ -4,8 +4,8 @@
       "user": {
         "data": {
           "client_id": "Client ID",
-          "client_secret": "Client Secret",
-          "nymo_device_id": "Nymo Device ID"
+          "client_secret": "Client secret",
+          "nymo_device_id": "Nymo device ID"
         },
         "data_description": {
           "client_id": "The Client ID that is copied from the Solyx Energy app.",
@@ -38,16 +38,20 @@
       "energyBoiler": {
         "name": "Energy to boiler"
       },
+      "gridPower": {
+        "name": "Grid power"
+      }
+    },
+    "select": {
       "operatingMode": {
         "name": "Operating mode",
         "state": {
           "DIRECT": "Direct",
           "MUTED": "Muted"
         }
-      },
-      "gridPower": {
-        "name": "Grid power"
-      },
+      }
+    },
+    "number": {
       "controlValue": {
         "name": "Control value"
       }

@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(frozen=True)
 class SolyxEnergyData:
     """Hold a snapshot of all Solyx Energy integration values, using the internal Solyx platform name."""
 
