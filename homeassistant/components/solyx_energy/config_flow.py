@@ -7,6 +7,7 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, TextSelectorType
 
 from .api import (
     SolyxEnergyApiClient,
@@ -24,9 +25,9 @@ from .const import (
 # Schema definition for the initial user setup
 STEP_USER_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_CLIENT_ID): str,
-        vol.Required(CONF_CLIENT_SECRET): str,
-        vol.Required(CONF_NYMO_DEVICE_ID): str,
+        vol.Required(CONF_CLIENT_ID): TextSelector(),
+        vol.Required(CONF_CLIENT_SECRET): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
+        vol.Required(CONF_NYMO_DEVICE_ID): TextSelector(),
     },
 )
 
@@ -35,8 +36,8 @@ STEP_USER_SCHEMA = vol.Schema(
 # When an incorrect device ID was given, we'd recommend users to reconfigure the device.
 STEP_REAUTH_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_CLIENT_ID): str,
-        vol.Required(CONF_CLIENT_SECRET): str,
+        vol.Required(CONF_CLIENT_ID): TextSelector(),
+        vol.Required(CONF_CLIENT_SECRET): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
     },
 )
 

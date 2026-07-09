@@ -12,7 +12,7 @@ CONF_CLIENT_ID = "client_id"
 CONF_CLIENT_SECRET = "client_secret"
 CONF_NYMO_DEVICE_ID = "nymo_device_id"
 
-# Device attributes
+# Device attributes in camelCase for mapping the HTTP API response to a device entity
 ATTRIBUTE_POWER_BOILER = "powerBoiler"
 ATTRIBUTE_ENERGY_BOILER = "energyBoiler"
 ATTRIBUTE_OPERATING_MODE = "operatingMode"

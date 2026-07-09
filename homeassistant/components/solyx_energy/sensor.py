@@ -22,6 +22,8 @@ from .const import (
 )
 from .entity import SolyxNymoEntity
 
+PARALLEL_UPDATES = 0
+
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=ATTRIBUTE_POWER_BOILER,
@@ -35,7 +37,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         key=ATTRIBUTE_ENERGY_BOILER,
         translation_key=ATTRIBUTE_ENERGY_BOILER,
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=0,
         native_unit_of_measurement="Wh",
     ),
@@ -87,4 +89,5 @@ class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
 
     @property
     def native_value(self) -> StateType | None:
+        """Function to retrieve the parsed (native) value of the sensor."""
         return getattr(self.coordinator.data, self.entity_description.key, None)

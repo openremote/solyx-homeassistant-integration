@@ -6,6 +6,11 @@
           "client_id": "Client ID",
           "client_secret": "Client Secret",
           "nymo_device_id": "Nymo Device ID"
+        },
+        "data_description": {
+          "client_id": "The Client ID that is copied from the Solyx Energy app.",
+          "client_secret": "The Client secret that is copied from the Solyx Energy app.",
+          "nymo_device_id": "The Nymo device ID that is copied from the Solyx Energy app."
         }
       },
       "reauth_confirm": {
@@ -27,19 +32,23 @@
   },
   "entity": {
     "sensor": {
-      "power_boiler": {
+      "powerBoiler": {
         "name": "Power boiler"
       },
-      "energy_boiler": {
+      "energyBoiler": {
         "name": "Energy to boiler"
       },
-      "operating_mode": {
-        "name": "Operating mode"
+      "operatingMode": {
+        "name": "Operating mode",
+        "state": {
+          "DIRECT": "Direct",
+          "MUTED": "Muted"
+        }
       },
-      "grid_power": {
+      "gridPower": {
         "name": "Grid power"
       },
-      "control_value": {
+      "controlValue": {
         "name": "Control value"
       }
     }

@@ -32,6 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 @dataclass
 class SolyxEnergyData:
     """Snapshot of all Solyx Energy integration values."""
+
     powerBoiler: float | None
     energyBoiler: float | None
     operatingMode: str | None
@@ -40,7 +41,7 @@ class SolyxEnergyData:
 
 
 class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
-    """Coordinator that fetches and sends data over HTTPS."""
+    """Coordinator that fetches and sends data over HTTPS using the SolyxEnergyApiClient class."""
 
     def __init__(
             self,
@@ -48,10 +49,11 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             api_client: SolyxEnergyApiClient,
             device_id: str,
             config_entry: ConfigEntry,
-    ):
+    ) -> None:
+        """Initializes the main coordinator for the Solyx Energy integration."""
         super().__init__(
             hass,
-            _LOGGER,
+            logger=_LOGGER,
             config_entry=config_entry,
             name=DOMAIN,
             update_interval=timedelta(seconds=DATA_INTERVAL_SECONDS),

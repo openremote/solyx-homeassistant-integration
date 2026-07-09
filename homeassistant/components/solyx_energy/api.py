@@ -1,9 +1,10 @@
-"""HTTP API related functions for updating and retrieving data from the Solyx Energy cloud environment."""
+"""HTTP API functions for updating and retrieving data from the Solyx Energy cloud environment."""
 from __future__ import annotations
 
 import logging
 import time
 from typing import Any
+from http import HTTPStatus
 
 import aiohttp
 
@@ -33,17 +34,18 @@ class SolyxEnergyApiClient:
             client_id: str,
             client_secret: str,
     ) -> None:
+        """Initializes the Solyx Energy API client."""
         self._session = session
         self._client_id = client_id
         self._client_secret = client_secret
         self._access_token: str | None = None
         self._token_expiry: float = 0.0
 
-    async def _async_update_access_token(self) -> str:
+    async def _async_update_access_token(self) -> None:
         """Function that obtains the access token from the Keycloak HTTP token endpoint."""
         if self._access_token and time.monotonic() < self._token_expiry - 30:
             _LOGGER.debug("Access token still valid, skipping refresh.")
-            return self._access_token
+            return None
 
         request_url = f"{BASE_URL}/auth/realms/{REALM_ID}/protocol/openid-connect/token"
         request_data = {
@@ -53,26 +55,26 @@ class SolyxEnergyApiClient:
         }
         try:
             async with self._session.post(
-                    request_url, data=request_data, timeout=aiohttp.ClientTimeout(total=10),
+                    request_url, data=request_data,
             ) as resp:
-                if resp.status in (401, 403):
-                    raise SolyxEnergyAuthError(f"Token request failed due to an authentication error (HTTP {resp.status}).")
-                if resp.status != 200:
-                    raise SolyxEnergyTokenError(f"Token request failed with HTTP {resp.status}")
+                if resp.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+                    raise SolyxEnergyAuthError(f"Token request failed due to an authentication error (HTTP {resp.status}).") from None
+                if resp.status != HTTPStatus.OK:
+                    raise SolyxEnergyTokenError(f"Token request failed with HTTP {resp.status}") from None
 
                 response_payload = await resp.json()
+                self._access_token = response_payload["access_token"]
+                self._token_expiry = time.monotonic() + response_payload.get("expires_in", 300)
 
         except aiohttp.ClientError as err:
-            raise SolyxEnergyTokenError(f"Token request failed due to a communication error: {err}")
+            raise SolyxEnergyTokenError(f"Token request failed due to a communication error: {err}") from err
         except TimeoutError as err:
-            raise SolyxEnergyTokenError(f"Token request failed due to a timeout: {err}")
-
-        self._access_token = response_payload["access_token"]
-        self._token_expiry = time.monotonic() + response_payload.get("expires_in", 300)
+            raise SolyxEnergyTokenError(f"Token request failed due to a timeout: {err}") from err
+        except (KeyError, TypeError, ValueError) as err:
+            raise SolyxEnergyTokenError(f"Token request failed due to a parsing error: {err}") from err
 
         _LOGGER.debug("Access token refreshed successfully.")
-        return self._access_token
-
+        return None
 
     def _get_auth_headers(self) -> dict[str, str]:
         """Retrieves the authorization header for HTTP requests to the Solyx Energy cloud environment."""
@@ -88,19 +90,20 @@ class SolyxEnergyApiClient:
             async with self._session.get(
                     request_url,
                     headers=self._get_auth_headers(),
-                    timeout=aiohttp.ClientTimeout(total=10),
             ) as response:
-                if response.status in (401, 403):
+                if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
                     self._access_token = None  # Invalidate token so next poll re-authenticates.
-                    raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.",)
-                if response.status != 200:
-                    raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}")
+                    raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.") from None
+                if response.status != HTTPStatus.OK:
+                    raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}") from None
                 return await response.json()
 
         except aiohttp.ClientError as err:
-            raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; {err}")
-        except TimeoutError:
-            raise SolyxEnergyDataError("Failed to retrieve device data from Solyx Energy cloud; request timed out.")
+            raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; {err}") from err
+        except TimeoutError as err:
+            raise SolyxEnergyDataError("Failed to retrieve device data from Solyx Energy cloud; request timed out.") from err
+        except ValueError as err:
+            raise SolyxEnergyDataError(f"Failed to retrieve device data due to a parsing error: {err}") from err
 
 
     async def async_test_connection(self, device_id: str) -> None:
