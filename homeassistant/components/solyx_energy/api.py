@@ -115,7 +115,7 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyDataError(f"Failed to retrieve device data due to a parsing error: {err}") from err
 
     async def async_set_asset_attribute(
-            self, asset_id: str, attribute_name: str, value: Any
+            self, asset_id: str, attribute_name: str, value: object,
     ) -> None:
         """Push a new attribute value to the Solyx Energy cloud environment."""
         await self._async_update_access_token()
@@ -124,7 +124,7 @@ class SolyxEnergyApiClient:
             async with self._session.put(
                 request_url,
                 headers={**self._get_auth_headers(), "Content-Type": "application/json"},
-                json=value
+                json=value,
             ) as response:
                 if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
                     self._access_token = None

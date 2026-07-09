@@ -7,7 +7,7 @@ from datetime import timedelta
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import (
@@ -15,6 +15,7 @@ from .api import (
     SolyxEnergyAuthError,
     SolyxEnergyDataError,
     SolyxEnergyTokenError,
+    SolyxEnergyWriteError,
 )
 from .const import (
     ATTRIBUTE_CONTROL_VALUE,
@@ -82,3 +83,12 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             gridPower=parse_float(nymo_data, ATTRIBUTE_GRID_POWER),
             controlValue=parse_float(nymo_data, ATTRIBUTE_CONTROL_VALUE),
         )
+
+    async def async_set_attribute(self, attribute_name: str, value: object) -> None:
+        """Push data from device entities to the Solyx cloud platform with the SolyxEnergyApiClient class."""
+        try:
+            await self.api_client.async_set_asset_attribute(self.device_id, attribute_name, value)
+        except SolyxEnergyAuthError as err:
+            raise ConfigEntryAuthFailed from err
+        except (SolyxEnergyTokenError, SolyxEnergyWriteError) as err:
+            raise HomeAssistantError(f"API error: {err}") from err
