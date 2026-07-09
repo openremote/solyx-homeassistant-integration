@@ -1,10 +1,11 @@
 """HTTP API functions for updating and retrieving data from the Solyx Energy cloud environment."""
+
 from __future__ import annotations
 
 import logging
 import time
-from typing import Any
 from http import HTTPStatus
+from typing import Any
 
 import aiohttp
 
@@ -16,23 +17,27 @@ _LOGGER = logging.getLogger(__name__)
 class SolyxEnergyError(Exception):
     """Base error for the Solyx Energy API client."""
 
+
 class SolyxEnergyAuthError(SolyxEnergyError):
     """Error related to authentication or authorization failures (HTTP 401/403)."""
+
 
 class SolyxEnergyTokenError(SolyxEnergyError):
     """Error during access token retrieval from the Solyx Energy cloud environment."""
 
+
 class SolyxEnergyDataError(SolyxEnergyError):
     """Error during data retrieval from the Solyx Energy cloud environment."""
+
 
 class SolyxEnergyApiClient:
     """HTTP API client with OAuth2 authentication to the Solyx Energy cloud environment."""
 
     def __init__(
-            self,
-            session: aiohttp.ClientSession,
-            client_id: str,
-            client_secret: str,
+        self,
+        session: aiohttp.ClientSession,
+        client_id: str,
+        client_secret: str,
     ) -> None:
         """Initializes the Solyx Energy API client."""
         self._session = session
@@ -45,7 +50,7 @@ class SolyxEnergyApiClient:
         """Function that obtains the access token from the Keycloak HTTP token endpoint."""
         if self._access_token and time.monotonic() < self._token_expiry - 30:
             _LOGGER.debug("Access token still valid, skipping refresh.")
-            return None
+            return
 
         request_url = f"{BASE_URL}/auth/realms/{REALM_ID}/protocol/openid-connect/token"
         request_data = {
@@ -55,7 +60,8 @@ class SolyxEnergyApiClient:
         }
         try:
             async with self._session.post(
-                    request_url, data=request_data,
+                request_url,
+                data=request_data,
             ) as resp:
                 if resp.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
                     raise SolyxEnergyAuthError(f"Token request failed due to an authentication error (HTTP {resp.status}).") from None
@@ -74,12 +80,11 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyTokenError(f"Token request failed due to a parsing error: {err}") from err
 
         _LOGGER.debug("Access token refreshed successfully.")
-        return None
+        return
 
     def _get_auth_headers(self) -> dict[str, str]:
         """Retrieves the authorization header for HTTP requests to the Solyx Energy cloud environment."""
         return {"Authorization": f"Bearer {self._access_token}"}
-
 
     async def async_get_asset_data(self, asset_id: str) -> dict[str, Any]:
         """Fetches asset/device data from the Solyx Energy cloud environment."""
@@ -88,11 +93,13 @@ class SolyxEnergyApiClient:
         request_url = f"{BASE_URL}/api/{REALM_ID}/asset/{asset_id}"
         try:
             async with self._session.get(
-                    request_url,
-                    headers=self._get_auth_headers(),
+                request_url,
+                headers=self._get_auth_headers(),
             ) as response:
                 if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
-                    self._access_token = None  # Invalidate token so next poll re-authenticates.
+                    self._access_token = (
+                        None  # Invalidate token so next poll re-authenticates.
+                    )
                     raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.") from None
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}") from None
@@ -104,7 +111,6 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyDataError("Failed to retrieve device data from Solyx Energy cloud; request timed out.") from err
         except ValueError as err:
             raise SolyxEnergyDataError(f"Failed to retrieve device data due to a parsing error: {err}") from err
-
 
     async def async_test_connection(self, device_id: str) -> None:
         """Validate credentials and the existence of the Device ID by fetching data, and catching any HTTP errors."""

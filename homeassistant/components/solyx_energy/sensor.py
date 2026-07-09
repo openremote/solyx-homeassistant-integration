@@ -1,4 +1,5 @@
 """Sensor entities for the Solyx Energy Nymo integration."""
+
 from __future__ import annotations
 
 from homeassistant.components.sensor import (
@@ -12,14 +13,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 
-from .coordinator import SolyxEnergyCoordinator
 from .const import (
-    ATTRIBUTE_POWER_BOILER,
-    ATTRIBUTE_ENERGY_BOILER,
-    ATTRIBUTE_OPERATING_MODE,
-    ATTRIBUTE_GRID_POWER,
     ATTRIBUTE_CONTROL_VALUE,
+    ATTRIBUTE_ENERGY_BOILER,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_OPERATING_MODE,
+    ATTRIBUTE_POWER_BOILER,
 )
+from .coordinator import SolyxEnergyCoordinator
 from .entity import SolyxNymoEntity
 
 PARALLEL_UPDATES = 0
@@ -63,10 +64,11 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     ),
 )
 
+
 async def async_setup_entry(
-        hass: HomeAssistant,
-        entry: ConfigEntry,
-        async_add_entities: AddEntitiesCallback,
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Solyx Energy sensors from a config entry."""
     coordinator: SolyxEnergyCoordinator = entry.runtime_data
@@ -74,13 +76,14 @@ async def async_setup_entry(
         SolyxSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
     )
 
+
 class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
     """A single Solyx Energy entity."""
 
     def __init__(
-            self,
-            coordinator: SolyxEnergyCoordinator,
-            description: SensorEntityDescription,
+        self,
+        coordinator: SolyxEnergyCoordinator,
+        description: SensorEntityDescription,
     ) -> None:
         """Initialize a Solyx Energy entity."""
         super().__init__(coordinator)

@@ -1,4 +1,5 @@
 """Config flow for the Solyx Energy integration."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -7,7 +8,11 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.selector import TextSelector, TextSelectorConfig, TextSelectorType
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .api import (
     SolyxEnergyApiClient,
@@ -41,12 +46,15 @@ STEP_REAUTH_SCHEMA = vol.Schema(
     },
 )
 
+
 class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle the main config flow for the Solyx Energy integration."""
 
     VERSION = 1
 
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None,
+    ) -> ConfigFlowResult:
         """Handle the initial step when setting up the integration."""
         errors: dict[str, str] = {}
 
@@ -58,7 +66,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self._validate_input(user_input)
             except SolyxEnergyAuthError:
                 errors["base"] = "invalid_auth"
-            except (SolyxEnergyTokenError, SolyxEnergyDataError):
+            except SolyxEnergyTokenError, SolyxEnergyDataError:
                 errors["base"] = "data_error"
             else:
                 return self.async_create_entry(
@@ -72,14 +80,16 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-
-    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any],
+    ) -> ConfigFlowResult:
         """Handle the reauthentication step when users provide incorrect credentials."""
         self._reauth_entry = self._get_reauth_entry()
         return await self.async_step_reauth_confirm()
 
-
-    async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None,
+    ) -> ConfigFlowResult:
         """Prompts a dialog that asks the user to re-enter credentials."""
         errors: dict[str, str] = {}
 
@@ -93,7 +103,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self._validate_input(merged_input)
             except SolyxEnergyAuthError:
                 errors["base"] = "invalid_auth"
-            except (SolyxEnergyTokenError, SolyxEnergyDataError):
+            except SolyxEnergyTokenError, SolyxEnergyDataError:
                 errors["base"] = "data_error"
             else:
                 return self.async_update_reload_and_abort(

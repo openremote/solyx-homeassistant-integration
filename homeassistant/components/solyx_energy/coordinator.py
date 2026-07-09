@@ -1,4 +1,5 @@
 """Coordinator file that handles data updates for Solyx Energy device entities."""
+
 from __future__ import annotations
 
 import logging
@@ -29,6 +30,7 @@ from .util import parse_attr_value, parse_float
 
 _LOGGER = logging.getLogger(__name__)
 
+
 @dataclass
 class SolyxEnergyData:
     """Snapshot of all Solyx Energy integration values."""
@@ -44,11 +46,11 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
     """Coordinator that fetches and sends data over HTTPS using the SolyxEnergyApiClient class."""
 
     def __init__(
-            self,
-            hass: HomeAssistant,
-            api_client: SolyxEnergyApiClient,
-            device_id: str,
-            config_entry: ConfigEntry,
+        self,
+        hass: HomeAssistant,
+        api_client: SolyxEnergyApiClient,
+        device_id: str,
+        config_entry: ConfigEntry,
     ) -> None:
         """Initializes the main coordinator for the Solyx Energy integration."""
         super().__init__(
@@ -60,7 +62,6 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         )
         self.api_client = api_client
         self.device_id = device_id
-
 
     async def _async_update_data(self) -> SolyxEnergyData:
         """Function to update the device entities, by fetching data using the SolyxEnergyApiClient class."""
