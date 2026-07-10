@@ -100,8 +100,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
 
         # Assume data from the control is correct
         if self.data is not None:
-            self.data = replace(self.data, **{attribute_name: value})  # type: ignore[arg-type]
-            self.async_update_listeners()
+            self.async_set_updated_data(replace(self.data, **{attribute_name: value}))  # type: ignore[arg-type]
 
         # After X amount of seconds retrieve the actual data through the ApiClient
         if self._settle_unsub is not None:
