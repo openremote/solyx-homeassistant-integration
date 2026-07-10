@@ -41,7 +41,7 @@ class SolyxEnergyData:
 
     powerBoiler: float | None     # noqa: N815
     energyBoiler: float | None    # noqa: N815
-    operatingMode: str | None          # noqa: N815
+    operatingMode: str | None     # noqa: N815
     gridPower: float | None       # noqa: N815
     controlValue: float | None    # noqa: N815
 
