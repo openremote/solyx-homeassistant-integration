@@ -9,7 +9,7 @@
         },
         "data_description": {
           "client_id": "Het Client ID dat je kunt kopiëren uit de Solyx Energy app.",
-          "client_secret": "De Client secret dat je kunt kopiëren uit de Solyx Energy app.",
+          "client_secret": "Het Client Secret dat je kunt kopiëren uit de Solyx Energy app.",
           "nymo_device_id": "Het Nymo apparaat ID dat je kunt kopiëren uit de Solyx Energy app."
         }
       },
