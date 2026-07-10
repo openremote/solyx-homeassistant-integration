@@ -43,4 +43,3 @@ class SolyxNumberEntity(SolyxNymoEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value and push it to the Solyx cloud platform."""
         await self.coordinator.async_set_attribute(self.entity_description.key, value)
-        await self.coordinator.async_refresh()

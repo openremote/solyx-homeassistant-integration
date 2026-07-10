@@ -6,6 +6,7 @@ DOMAIN = "solyx_energy"
 BASE_URL = "https://cloud.solyxenergy.nl"
 REALM_ID = "solyx"
 DATA_INTERVAL_SECONDS = 60
+DATA_SETTLE_SECONDS = 2
 
 # Config entry keys
 CONF_CLIENT_ID = "client_id"

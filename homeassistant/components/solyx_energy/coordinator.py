@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import timedelta
+from dataclasses import dataclass, replace
+from datetime import datetime, timedelta
 import logging
 from typing import TYPE_CHECKING
 
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
+from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import (
@@ -24,13 +25,14 @@ from .const import (
     ATTRIBUTE_OPERATING_MODE,
     ATTRIBUTE_POWER_BOILER,
     DATA_INTERVAL_SECONDS,
+    DATA_SETTLE_SECONDS,
     DOMAIN,
 )
 from .util import parse_attr_value, parse_float
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
-    from homeassistant.core import HomeAssistant
+    from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -66,6 +68,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         )
         self.api_client = api_client
         self.device_id = device_id
+        self._settle_unsub: CALLBACK_TYPE | None = None
 
     async def _async_update_data(self) -> SolyxEnergyData:
         """Fetch data with the SolyxEnergyApiClient class and update the device entities accordingly."""
@@ -94,3 +97,21 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             raise ConfigEntryAuthFailed from err
         except (SolyxEnergyTokenError, SolyxEnergyWriteError) as err:
             raise HomeAssistantError(f"API error: {err}") from err
+
+        # Assume data from the control is correct
+        self.data = replace(self.data, **{attribute_name: value})  # type: ignore[arg-type]
+        self.async_update_listeners()
+
+        # After X amount of seconds retrieve the actual data through the ApiClient
+        if self._settle_unsub is not None:
+            self._settle_unsub()
+        self._settle_unsub = async_call_later(
+            self.hass,
+            DATA_SETTLE_SECONDS,
+            self._async_settle_refresh,
+        )
+
+    async def _async_settle_refresh(self, _now: datetime) -> None:
+        """Refresh data after a write has settled on the Solyx cloud platform."""
+        self._settle_unsub = None
+        await self.async_request_refresh()

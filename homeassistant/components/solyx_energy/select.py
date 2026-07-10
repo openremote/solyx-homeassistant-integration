@@ -43,4 +43,3 @@ class SolyxSelectEntity(SolyxNymoEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change the selected option and push it to the Solyx cloud platform."""
         await self.coordinator.async_set_attribute(self.entity_description.key, option)
-        await self.coordinator.async_refresh()
