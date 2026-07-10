@@ -84,7 +84,6 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyTokenError(f"Token request failed due to a parsing error: {err}") from err
 
         _LOGGER.debug("Access token refreshed successfully.")
-        return
 
     def _get_auth_headers(self) -> dict[str, str]:
         """Retrieve the authorization header for HTTP requests to the Solyx Energy cloud environment."""
@@ -132,7 +131,7 @@ class SolyxEnergyApiClient:
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; error {response.status}") from None
 
-                _LOGGER.debug(f"{attribute_name} has successfully been updated to {value}.")
+                _LOGGER.debug("%s has successfully been updated to %s.", attribute_name, value)
 
         except aiohttp.ClientError as err:
             raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; {err}") from err

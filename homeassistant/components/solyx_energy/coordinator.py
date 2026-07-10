@@ -88,7 +88,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
     async def async_set_attribute(self, attribute_name: str, value: object) -> None:
         """Push data from device entities to the Solyx cloud platform with the SolyxEnergyApiClient class."""
         try:
-            _LOGGER.debug(f"Updating entity {attribute_name} in the Solyx cloud platform to {value}...")
+            _LOGGER.debug("Updating entity %s in the Solyx cloud platform to %s...", attribute_name, value)
             await self.api_client.async_set_asset_attribute(self.device_id, attribute_name, value)
         except SolyxEnergyAuthError as err:
             raise ConfigEntryAuthFailed from err
