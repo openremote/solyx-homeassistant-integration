@@ -69,6 +69,8 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.api_client = api_client
         self.device_id = device_id
         self._settle_unsub: CALLBACK_TYPE | None = None
+        if self.config_entry is not None:
+            self.config_entry.async_on_unload(self._async_cancel_settle_timer)
 
     async def _async_update_data(self) -> SolyxEnergyData:
         """Fetch data with the SolyxEnergyApiClient class and update the device entities accordingly."""
@@ -106,10 +108,14 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         if self._settle_unsub is not None:
             self._settle_unsub()
         self._settle_unsub = async_call_later(self.hass, DATA_SETTLE_SECONDS, self._async_settle_refresh)
-        if self.config_entry is not None:
-            self.config_entry.async_on_unload(self._settle_unsub)
 
     async def _async_settle_refresh(self, _now: datetime) -> None:
         """Refresh data after a write has settled on the Solyx cloud platform."""
         self._settle_unsub = None
         await self.async_request_refresh()
+
+    def _async_cancel_settle_timer(self) -> None:
+        """Cancel any pending settle timer when the config entry is unloaded."""
+        if self._settle_unsub is not None:
+            self._settle_unsub()
+            self._settle_unsub = None
