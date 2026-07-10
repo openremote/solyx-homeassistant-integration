@@ -1,0 +1,42 @@
+"""Sensor entities for the Solyx Energy Nymo integration."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from homeassistant.components.sensor import SensorEntity
+
+from .entity import SolyxNymoEntity
+from .entity_descriptions import SENSOR_DESCRIPTIONS
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.typing import StateType
+
+    from .coordinator import SolyxEnergyCoordinator
+
+PARALLEL_UPDATES = 0
+
+
+async def async_setup_entry(
+    _hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up Solyx Energy sensors from a config entry."""
+    coordinator: SolyxEnergyCoordinator = entry.runtime_data
+    async_add_entities(
+        SolyxSensorEntity(coordinator, description)
+        for description in SENSOR_DESCRIPTIONS
+    )
+
+
+class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
+    """A single Solyx Energy sensor entity."""
+
+    @property
+    def native_value(self) -> StateType | None:
+        """Retrieve the parsed (native) value of the sensor."""
+        return getattr(self.coordinator.data, self.entity_description.key, None)

@@ -1,11 +1,59 @@
 {
   "config": {
-
+    "step": {
+      "user": {
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client secret",
+          "nymo_device_id": "Nymo device ID"
+        },
+        "data_description": {
+          "client_id": "The Client ID that is copied from the Solyx Energy app.",
+          "client_secret": "The Client Secret that is copied from the Solyx Energy app.",
+          "nymo_device_id": "The Nymo device ID that is copied from the Solyx Energy app."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate Solyx Energy",
+        "description": "Your credentials are no longer valid for device {device_id}. Re-enter your Client ID and Client Secret.",
+        "data": {
+          "client_id": "Client ID",
+          "client_secret": "Client Secret"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Could not authorize using your credentials. Please verify the Client ID, Client Secret, and your device ID.",
+      "data_error": "Couldn't retrieve device data due to a communication error."
+    },
+    "abort": {
+      "reauth_successful": "Re-authentication was successful."
+    }
   },
   "entity": {
-    "nymo": {
+    "sensor": {
       "powerBoiler": {
-        "title": "Power boiler"
+        "name": "Power boiler"
+      },
+      "energyBoiler": {
+        "name": "Energy to boiler"
+      },
+      "gridPower": {
+        "name": "Grid power"
+      }
+    },
+    "select": {
+      "operatingMode": {
+        "name": "Operating mode",
+        "state": {
+          "DIRECT": "Direct",
+          "MUTED": "Muted"
+        }
+      }
+    },
+    "number": {
+      "controlValue": {
+        "name": "Control value"
       }
     }
   }

@@ -6,17 +6,73 @@ build-backend = "setuptools.build_meta"
 name = "solyx-homeassistant-integration"
 version = "1.0.0"
 description = "Solyx Energy integration for Home Assistant"
-requires-python = ">=3.13"
+requires-python = ">=3.14.2"
 dependencies = [
-    "homeassistant==2026.6.4",
+    "homeassistant>=2026.6.4",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.24.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+# Inspired by the lint configuration used by home-assistant/core, with additional stricter practices.
+# Uses ruff + mypy (instead of codespell/pylint)
+[tool.ruff]
+target-version = "py314"
+required-version = ">=0.15.20"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",   # one-blank-line-before-class (conflicts with D211)
+    "D213",   # multi-line-summary-second-line (conflicts with D212)
+    "E501",   # allow long lines for when applicable for readability purposes
+    "EM101",  # make exception for requiring variables instead of string literals
+    "EM102",  # make exception for requiring variables instead of f-string
+    "EM103",  # make exception for requiring variables instead of .format()
+    "TRY003"  # make exception for inlining error messages
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = [
+    "S101",    # allow assert in tests
+    "ANN",     # no type annotations required in tests
+    "D",       # no docstrings required in tests
+    "PLR2004", # magic values OK in tests
+]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["homeassistant"]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+voluptuous = "vol"
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+# Mypy configuration
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
