@@ -9,7 +9,7 @@
         },
         "data_description": {
           "client_id": "The Client ID that is copied from the Solyx Energy app.",
-          "client_secret": "The Client secret that is copied from the Solyx Energy app.",
+          "client_secret": "The Client Secret that is copied from the Solyx Energy app.",
           "nymo_device_id": "The Nymo device ID that is copied from the Solyx Energy app."
         }
       },
