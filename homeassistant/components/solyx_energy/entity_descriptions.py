@@ -61,5 +61,6 @@ NUMBER_DESCRIPTIONS: tuple[NumberEntityDescription, ...] = (
         native_max_value=100,
         native_step=1,
         native_unit_of_measurement="%",
+        icon="mdi:gauge"
     ),
 )

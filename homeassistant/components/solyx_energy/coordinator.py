@@ -99,17 +99,16 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             raise HomeAssistantError(f"API error: {err}") from err
 
         # Assume data from the control is correct
-        self.data = replace(self.data, **{attribute_name: value})  # type: ignore[arg-type]
-        self.async_update_listeners()
+        if self.data is not None:
+            self.data = replace(self.data, **{attribute_name: value})  # type: ignore[arg-type]
+            self.async_update_listeners()
 
         # After X amount of seconds retrieve the actual data through the ApiClient
         if self._settle_unsub is not None:
             self._settle_unsub()
-        self._settle_unsub = async_call_later(
-            self.hass,
-            DATA_SETTLE_SECONDS,
-            self._async_settle_refresh,
-        )
+        self._settle_unsub = async_call_later(self.hass, DATA_SETTLE_SECONDS, self._async_settle_refresh)
+        if self.config_entry is not None:
+            self.config_entry.async_on_unload(self._settle_unsub)
 
     async def _async_settle_refresh(self, _now: datetime) -> None:
         """Refresh data after a write has settled on the Solyx cloud platform."""
