@@ -3,7 +3,7 @@
 DOMAIN = "solyx_energy"
 
 # Integration variables
-BASE_URL = "https://cloud.solyxenergy.nl"
+BASE_URL = "https://staging.cloud.solyxenergy.nl"
 REALM_ID = "solyx"
 DATA_INTERVAL_SECONDS = 60
 DATA_SETTLE_SECONDS = 2
