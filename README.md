@@ -11,7 +11,7 @@ python -m pytest
 
 This installs `homeassistant`, `pytest`, and `pytest-asyncio`.  
 When you're ready to submit to home-assistant/core, copy:
-- `homeassistant/components/solyx_energy/`
+- `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`
 
 (Do *not* copy `tests/conftest.py` — HA Core has its own.)

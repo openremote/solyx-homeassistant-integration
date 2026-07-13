@@ -4,8 +4,10 @@
   "codeowners": ["@MartinaeyNL"],
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/solyx_energy/",
+  "issue_tracker": "https://github.com/openremote/solyx-homeassistant-integration/",
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "quality_scale": "bronze",
-  "requirements": []
+  "requirements": [],
+  "version": "0.4.0"
 }
