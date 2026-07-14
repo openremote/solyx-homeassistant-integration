@@ -43,6 +43,7 @@ def mock_solyx_api_client():
     data = json_loads((FIXTURES_DIR / "asset_data.json").read_text())
     client = AsyncMock(spec=SolyxEnergyApiClient)
     client.async_get_asset_data.return_value = data
+    client.async_set_asset_attribute.return_value = None
     client.async_test_connection.return_value = None
     return client
 

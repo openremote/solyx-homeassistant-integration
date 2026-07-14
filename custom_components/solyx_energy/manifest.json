@@ -3,10 +3,11 @@
   "name": "Solyx Energy",
   "codeowners": ["@MartinaeyNL"],
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/solyx_energy/",
-  "issue_tracker": "https://github.com/openremote/solyx-homeassistant-integration/",
+  "documentation": "https://github.com/openremote/solyx-homeassistant-integration",
+  "issue_tracker": "https://github.com/openremote/solyx-homeassistant-integration/issues",
   "integration_type": "device",
   "iot_class": "cloud_polling",
+  "loggers": ["custom_components.solyx_energy"],
   "quality_scale": "bronze",
   "requirements": [],
   "version": "0.4.0"

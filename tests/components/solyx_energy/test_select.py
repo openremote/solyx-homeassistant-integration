@@ -1,5 +1,4 @@
 """Tests for the Solyx Energy select platform."""
-
 import pytest
 
 from custom_components.solyx_energy.api import SolyxEnergyTokenError

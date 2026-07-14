@@ -2,6 +2,14 @@
 
 Home Assistant integration for controlling and gaining insight in Solyx Energy devices
 
+## Supported platforms
+
+| Platform | Entities | Description |
+|----------|----------|-------------|
+| `sensor` | Power boiler, Energy to boiler, Grid power | Read-only measurements reported by the Nymo device |
+| `select` | Operating mode | Switch between `DIRECT` and `MUTED` operating modes |
+| `number` | Control value | Set the boiler control value (0–100%) |
+
 ## Install through Home Assistant
 The integration has not been released to the official Home Assistant store yet.<br />
 As an alternative, you can [install through HACS](#install-through-hacs)
@@ -27,6 +35,18 @@ Installation steps:
 9. Copy the Client ID, Client secret and Nymo device ID from the Solyx Energy app, and paste them in here.
 10. Press **Submit**, and you're good to go!
 
+## Troubleshooting
+
+| Error shown during setup | Likely cause | What to do |
+|--------------------------|--------------|------------|
+| `Could not authorize using your credentials...` (`invalid_auth`) | Wrong Client ID, Client Secret, or device ID | Re-enter the values from the Solyx Energy app. If the device ID is wrong, remove the integration and reconfigure it. |
+| `Couldn't retrieve device data due to a communication error.` (`data_error`) | Solyx cloud unreachable or returned an error | Check your network connection and the [Solyx status page](https://staging.cloud.solyxenergy.nl); retry in a few minutes. |
+| Integration goes into `Setup retry` | Transient API failure during the first refresh | No action needed — Home Assistant retries automatically. If it persists, check the logs for `SolyxEnergyDataError`/`SolyxEnergyTokenError`. |
+| A reauthentication prompt appears | The Client Secret expired or was rotated | Re-enter your credentials when prompted; the device ID is preserved automatically. |
+
+<!-- TODO: Add a screenshot of the integration's device page here. -->
+<!-- ![Solyx Energy device](brand/screenshot.png) -->
+
 ## Development
 
 ```bash
@@ -34,7 +54,16 @@ pip install -e ".[dev]"
 python -m pytest
 ```
 
-This installs `homeassistant`, `pytest`, and `pytest-asyncio`.  
+This installs `homeassistant`, `pytest`, `pytest-asyncio`, `pytest-cov`,
+`pytest-homeassistant-custom-component`, `ruff`, and `mypy`.
+
+Lint and type-check before submitting:
+
+```bash
+ruff check .
+mypy custom_components tests
+```
+
 When you're ready to submit to home-assistant/core, copy:
 - `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`
