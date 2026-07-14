@@ -35,18 +35,6 @@ Installation steps:
 9. Copy the Client ID, Client secret and Nymo device ID from the Solyx Energy app, and paste them in here.
 10. Press **Submit**, and you're good to go!
 
-## Troubleshooting
-
-| Error shown during setup | Likely cause | What to do |
-|--------------------------|--------------|------------|
-| `Could not authorize using your credentials...` (`invalid_auth`) | Wrong Client ID, Client Secret, or device ID | Re-enter the values from the Solyx Energy app. If the device ID is wrong, remove the integration and reconfigure it. |
-| `Couldn't retrieve device data due to a communication error.` (`data_error`) | Solyx cloud unreachable or returned an error | Check your network connection and the [Solyx status page](https://staging.cloud.solyxenergy.nl); retry in a few minutes. |
-| Integration goes into `Setup retry` | Transient API failure during the first refresh | No action needed — Home Assistant retries automatically. If it persists, check the logs for `SolyxEnergyDataError`/`SolyxEnergyTokenError`. |
-| A reauthentication prompt appears | The Client Secret expired or was rotated | Re-enter your credentials when prompted; the device ID is preserved automatically. |
-
-<!-- TODO: Add a screenshot of the integration's device page here. -->
-<!-- ![Solyx Energy device](brand/screenshot.png) -->
-
 ## Development
 
 ```bash
@@ -54,8 +42,7 @@ pip install -e ".[dev]"
 python -m pytest
 ```
 
-This installs `homeassistant`, `pytest`, `pytest-asyncio`, `pytest-cov`,
-`pytest-homeassistant-custom-component`, `ruff`, and `mypy`.
+This installs `homeassistant`, `pytest` utilities, `ruff`, and `mypy`.
 
 Lint and type-check before submitting:
 
