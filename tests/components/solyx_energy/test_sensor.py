@@ -1,0 +1,25 @@
+"""Tests for the Solyx Energy sensor platform."""
+
+import pytest
+
+from custom_components.solyx_energy.const import DOMAIN
+
+from .const import NYMO_DEVICE_ID
+
+
+@pytest.mark.parametrize(("key", "expected"), [
+    ("powerBoiler", ("1234.0", "W", "power")),
+    ("energyBoiler", ("5678.0", "Wh", "energy")),
+    ("gridPower", ("-100.0", "W", "power")),
+])
+async def test_sensor_states(hass, entity_registry, init_integration, key, expected):
+    """Test each sensor has the correct state, unit, and device class."""
+    entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, f"{NYMO_DEVICE_ID}-{key}")
+    assert entity_id is not None
+
+    # Check the state, unit, and device class match the API data.
+    state = hass.states.get(entity_id)
+    value, unit, device_class = expected
+    assert state.state == value
+    assert state.attributes["unit_of_measurement"] == unit
+    assert state.attributes["device_class"] == device_class

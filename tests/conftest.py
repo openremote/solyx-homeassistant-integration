@@ -1,11 +1,12 @@
-"""
-LOCAL DEVELOPMENT HELPER — DO NOT COPY this file to the home-assistant/core fork.
-HA Core has its own ``tests/conftest.py`` with proper fixtures.
-"""
-from pathlib import Path
+"""LOCAL DEVELOPMENT HELPER - DO NOT COPY this file to the home-assistant/core fork.
 
-import homeassistant.components
+HA Core ships its own ``tests/conftest.py``. This file only exists to enable
+custom integration loading via ``pytest-homeassistant-custom-component``.
+"""
 
-_local = str(Path(__file__).resolve().parent.parent / "homeassistant" / "components")
-if _local not in homeassistant.components.__path__:
-    homeassistant.components.__path__.insert(0, _local)
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def auto_enable_custom_integrations(enable_custom_integrations):
+    """Enable custom integration loading for all tests."""

@@ -47,6 +47,9 @@ ignore = [
     "ANN",     # no type annotations required in tests
     "D",       # no docstrings required in tests
     "PLR2004", # magic values OK in tests
+    "ARG001",  # unused fixture args (setup-fixture side effects)
+    "S105",    # test tokens are not real passwords
+    "SLF001",  # private member access needed to set up/test internal state
 ]
 
 [tool.ruff.lint.isort]
@@ -72,7 +75,13 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 show_error_codes = true
+explicit_package_bases = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = "pytest_homeassistant_custom_component.*"
+ignore_missing_imports = true
