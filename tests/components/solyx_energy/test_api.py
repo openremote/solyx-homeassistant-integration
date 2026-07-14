@@ -16,6 +16,7 @@ from custom_components.solyx_energy.api import (
     SolyxEnergyApiClient,
     SolyxEnergyAuthError,
     SolyxEnergyDataError,
+    SolyxEnergyTokenError,
     SolyxEnergyWriteError,
 )
 from custom_components.solyx_energy.const import BASE_URL, REALM_ID
@@ -66,6 +67,14 @@ async def test_token_refresh_auth_error(aioclient_mock, mock_session):
         await client._async_update_access_token()
 
 
+async def test_token_refresh_token_error(aioclient_mock, mock_session):
+    """A non-auth HTTP failure from the token endpoint raises SolyxEnergyTokenError."""
+    aioclient_mock.post(TOKEN_URL, status=503)
+    client = SolyxEnergyApiClient(mock_session, "test-id", "test-secret")
+    with pytest.raises(SolyxEnergyTokenError):
+        await client._async_update_access_token()
+
+
 # --- async_get_asset_data ---
 
 
@@ -86,6 +95,14 @@ async def test_get_asset_data_error(aioclient_mock, client):
         await client.async_get_asset_data(DEVICE_ID)
 
 
+async def test_get_asset_data_auth_error(aioclient_mock, client):
+    """A 401 while reading data raises SolyxEnergyAuthError and clears the cached token."""
+    aioclient_mock.get(ASSET_URL, status=401)
+    with pytest.raises(SolyxEnergyAuthError):
+        await client.async_get_asset_data(DEVICE_ID)
+    assert client._access_token is None
+
+
 # --- async_set_asset_attribute ---
 
 
@@ -103,3 +120,20 @@ async def test_set_asset_attribute_error(aioclient_mock, client):
     aioclient_mock.put(ATTRIBUTE_URL, status=500)
     with pytest.raises(SolyxEnergyWriteError):
         await client.async_set_asset_attribute(DEVICE_ID, ATTRIBUTE_NAME, "DIRECT")
+
+
+async def test_set_asset_attribute_auth_error(aioclient_mock, client):
+    """A 403 while writing raises SolyxEnergyAuthError and clears the cached token."""
+    aioclient_mock.put(ATTRIBUTE_URL, status=403)
+    with pytest.raises(SolyxEnergyAuthError):
+        await client.async_set_asset_attribute(DEVICE_ID, ATTRIBUTE_NAME, "DIRECT")
+    assert client._access_token is None
+
+
+# --- async_test_connection ---
+
+
+async def test_test_connection_success(aioclient_mock, client):
+    """async_test_connection validates credentials by fetching asset data without raising."""
+    aioclient_mock.get(ASSET_URL, json=ASSET_PAYLOAD)
+    await client.async_test_connection(DEVICE_ID)

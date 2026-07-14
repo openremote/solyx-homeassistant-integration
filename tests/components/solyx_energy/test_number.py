@@ -2,6 +2,7 @@
 
 import pytest
 
+from custom_components.solyx_energy.api import SolyxEnergyWriteError
 from custom_components.solyx_energy.const import DOMAIN
 from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
 from homeassistant.components.number.const import SERVICE_SET_VALUE
@@ -38,7 +39,7 @@ async def test_number_state_and_write(hass, entity_registry, mock_solyx_api_clie
 
 async def test_number_api_failure(hass, mock_solyx_api_client, init_integration):
     """Test that an API error during a write raises HomeAssistantError."""
-    mock_solyx_api_client.async_set_asset_attribute.side_effect = HomeAssistantError
+    mock_solyx_api_client.async_set_asset_attribute.side_effect = SolyxEnergyWriteError
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
