@@ -67,14 +67,14 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.api_client = api_client
         self.device_id = device_id
         self._settle_unsub: CALLBACK_TYPE | None = None
-        assert self.config_entry is not None
-        self.config_entry.async_on_unload(self._async_cancel_settle_timer)
+        if self.config_entry is not None:
+            self.config_entry.async_on_unload(self._async_cancel_settle_timer)
 
     @override
     async def _async_update_data(self) -> SolyxEnergyData:
         """Fetch data with the SolyxEnergyApiClient class and update the device entities accordingly."""
         try:
-            _LOGGER.debug("Retrieving data from Solyx Energy API...")
+            _LOGGER.debug("Retrieving data from Solyx Energy API")
             nymo_data = await self.api_client.async_get_asset_data(self.device_id)
         except SolyxEnergyAuthError as err:
             raise ConfigEntryAuthFailed from err
@@ -92,7 +92,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
     async def async_set_attribute(self, attribute_name: str, value: object) -> None:
         """Push data from device entities to the Solyx cloud platform with the SolyxEnergyApiClient class."""
         try:
-            _LOGGER.debug("Updating entity %s in the Solyx cloud platform to %s...", attribute_name, value)
+            _LOGGER.debug("Updating entity %s in the Solyx cloud platform to %s", attribute_name, value)
             await self.api_client.async_set_asset_attribute(self.device_id, attribute_name, value)
         except SolyxEnergyAuthError as err:
             raise ConfigEntryAuthFailed from err

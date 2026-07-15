@@ -8,11 +8,11 @@ from .entity import SolyxNymoEntity
 from .entity_descriptions import SENSOR_DESCRIPTIONS
 
 if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
     from homeassistant.helpers.typing import StateType
 
+    from . import SolyxEnergyConfigEntry
     from .coordinator import SolyxEnergyCoordinator
 
 PARALLEL_UPDATES = 0
@@ -20,8 +20,8 @@ PARALLEL_UPDATES = 0
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    entry: SolyxEnergyConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Solyx Energy sensors from a config entry."""
     coordinator: SolyxEnergyCoordinator = entry.runtime_data

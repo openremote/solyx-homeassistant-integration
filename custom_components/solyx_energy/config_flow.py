@@ -18,7 +18,12 @@ from .api import (
     SolyxEnergyDataError,
     SolyxEnergyTokenError,
 )
-from .const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_NYMO_DEVICE_ID, DOMAIN
+from .const import (
+    CONF_NYMO_CLIENT_ID,
+    CONF_NYMO_CLIENT_SECRET,
+    CONF_NYMO_DEVICE_ID,
+    DOMAIN,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -26,8 +31,8 @@ if TYPE_CHECKING:
 # Schema definition for the initial user setup
 STEP_USER_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_CLIENT_ID): TextSelector(),
-        vol.Required(CONF_CLIENT_SECRET): TextSelector(
+        vol.Required(CONF_NYMO_CLIENT_ID): TextSelector(),
+        vol.Required(CONF_NYMO_CLIENT_SECRET): TextSelector(
             TextSelectorConfig(type=TextSelectorType.PASSWORD),
         ),
         vol.Required(CONF_NYMO_DEVICE_ID): TextSelector(),
@@ -39,8 +44,8 @@ STEP_USER_SCHEMA = vol.Schema(
 # When an incorrect device ID was given, we'd recommend users to delete and reconfigure the device entry.
 STEP_REAUTH_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_CLIENT_ID): TextSelector(),
-        vol.Required(CONF_CLIENT_SECRET): TextSelector(
+        vol.Required(CONF_NYMO_CLIENT_ID): TextSelector(),
+        vol.Required(CONF_NYMO_CLIENT_SECRET): TextSelector(
             TextSelectorConfig(type=TextSelectorType.PASSWORD),
         ),
     },
@@ -87,7 +92,6 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
         _entry_data: Mapping[str, Any],
     ) -> ConfigFlowResult:
         """Handle the reauthentication step when users provide incorrect credentials."""
-        self._reauth_entry = self._get_reauth_entry()
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
@@ -95,13 +99,14 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Prompts a dialog that asks the user to re-enter credentials."""
+        reauth_entry = self._get_reauth_entry()
         errors: dict[str, str] = {}
 
         if user_input is not None:
             merged_input = {
-                CONF_CLIENT_ID: user_input[CONF_CLIENT_ID],
-                CONF_CLIENT_SECRET: user_input[CONF_CLIENT_SECRET],
-                CONF_NYMO_DEVICE_ID: self._reauth_entry.data[CONF_NYMO_DEVICE_ID],
+                CONF_NYMO_CLIENT_ID: user_input[CONF_NYMO_CLIENT_ID],
+                CONF_NYMO_CLIENT_SECRET: user_input[CONF_NYMO_CLIENT_SECRET],
+                CONF_NYMO_DEVICE_ID: reauth_entry.data[CONF_NYMO_DEVICE_ID],
             }
             try:
                 await self._validate_input(merged_input)
@@ -111,7 +116,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "data_error"
             else:
                 return self.async_update_reload_and_abort(
-                    self._reauth_entry,
+                    reauth_entry,
                     data=merged_input,
                 )
 
@@ -119,7 +124,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="reauth_confirm",
             data_schema=STEP_REAUTH_SCHEMA,
             description_placeholders={
-                "device_id": self._reauth_entry.data[CONF_NYMO_DEVICE_ID],
+                "device_id": reauth_entry.data[CONF_NYMO_DEVICE_ID],
             },
             errors=errors,
         )
@@ -129,7 +134,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
         session = async_get_clientsession(self.hass)
         client = SolyxEnergyApiClient(
             session=session,
-            client_id=user_input[CONF_CLIENT_ID],
-            client_secret=user_input[CONF_CLIENT_SECRET],
+            nymo_client_id=user_input[CONF_NYMO_CLIENT_ID],
+            nymo_client_secret=user_input[CONF_NYMO_CLIENT_SECRET],
         )
         await client.async_test_connection(user_input[CONF_NYMO_DEVICE_ID])

@@ -11,40 +11,39 @@
     "step": {
       "reauth_confirm": {
         "data": {
-          "client_id": "Client ID",
-          "client_secret": "Client Secret",
-          "nymo_device_id": "Nymo device ID"
+          "nymo_client_id": "Client ID",
+          "nymo_client_secret": "Client Secret"
         },
         "data_description": {
-          "client_id": "The Client ID that is copied from the Solyx Energy app.",
-          "client_secret": "The Client Secret that is copied from the Solyx Energy app.",
-          "nymo_device_id": "The Nymo device ID that is copied from the Solyx Energy app."
+          "nymo_client_id": "The Client ID that is copied from the Solyx Energy app.",
+          "nymo_client_secret": "The Client Secret that is copied from the Solyx Energy app."
         },
         "description": "Your credentials are no longer valid for device {device_id}. Re-enter your Client ID and Client Secret.",
         "title": "Reauthenticate Solyx Energy"
       },
       "user": {
         "data": {
-          "client_id": "Client ID",
-          "client_secret": "Client secret",
+          "nymo_client_id": "Client ID",
+          "nymo_client_secret": "Client secret",
           "nymo_device_id": "Nymo device ID"
         },
         "data_description": {
-          "client_id": "The Client ID that is copied from the Solyx Energy app.",
-          "client_secret": "The Client Secret that is copied from the Solyx Energy app.",
+          "nymo_client_id": "The Client ID that is copied from the Solyx Energy app.",
+          "nymo_client_secret": "The Client Secret that is copied from the Solyx Energy app.",
           "nymo_device_id": "The Nymo device ID that is copied from the Solyx Energy app."
-        }
+        },
+        "description": "Set up your Nymo to integrate with Home Assistant."
       }
     }
   },
   "entity": {
     "number": {
-      "controlValue": {
+      "control_value": {
         "name": "Control value"
       }
     },
     "select": {
-      "operatingMode": {
+      "operating_mode": {
         "name": "Operating mode",
         "state": {
           "DIRECT": "Direct",
@@ -53,13 +52,13 @@
       }
     },
     "sensor": {
-      "energyBoiler": {
+      "energy_boiler": {
         "name": "Energy to boiler"
       },
-      "gridPower": {
+      "grid_power": {
         "name": "Grid power"
       },
-      "powerBoiler": {
+      "power_boiler": {
         "name": "Power boiler"
       }
     }

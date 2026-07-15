@@ -1,4 +1,5 @@
 """Centralized entity descriptions for all Solyx Energy Nymo entity platforms."""
+from dataclasses import dataclass
 
 from homeassistant.components.number import NumberEntityDescription
 from homeassistant.components.select import SelectEntityDescription
@@ -15,41 +16,16 @@ from .const import (
     ATTRIBUTE_OPERATING_MODE,
     ATTRIBUTE_POWER_BOILER,
 )
+from .util import camel_to_snake
 
-SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
-    SensorEntityDescription(
-        key=ATTRIBUTE_POWER_BOILER,
-        translation_key=ATTRIBUTE_POWER_BOILER,
-        device_class=SensorDeviceClass.POWER,
-        state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=0,
-        native_unit_of_measurement="W",
-    ),
-    SensorEntityDescription(
-        key=ATTRIBUTE_ENERGY_BOILER,
-        translation_key=ATTRIBUTE_ENERGY_BOILER,
-        device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-        suggested_display_precision=0,
-        native_unit_of_measurement="Wh",
-    ),
-    SensorEntityDescription(
-        key=ATTRIBUTE_GRID_POWER,
-        translation_key=ATTRIBUTE_GRID_POWER,
-        device_class=SensorDeviceClass.POWER,
-        state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=0,
-        native_unit_of_measurement="W",
-    ),
-)
 
-SELECT_DESCRIPTIONS: tuple[SelectEntityDescription, ...] = (
-    SelectEntityDescription(
-        key=ATTRIBUTE_OPERATING_MODE,
-        translation_key=ATTRIBUTE_OPERATING_MODE,
-        options=["DIRECT", "MUTED"],
-    ),
-)
+@dataclass(frozen=True, kw_only=True)
+# pylint: disable-next=home-assistant-enforce-class-module
+class SolyxSelectEntityDescription(SelectEntityDescription):
+    """Description for a Solyx select entity with a device attribute to HA option mapping."""
+    options_map: dict[str, str]
+
+OPERATING_MODE_MAP = {"DIRECT": "direct", "MUTED": "muted"}
 
 NUMBER_DESCRIPTIONS: tuple[NumberEntityDescription, ...] = (
     NumberEntityDescription(
@@ -60,5 +36,40 @@ NUMBER_DESCRIPTIONS: tuple[NumberEntityDescription, ...] = (
         native_step=1,
         native_unit_of_measurement="%",
         icon="mdi:gauge",
+    ),
+)
+
+SELECT_DESCRIPTIONS: tuple[SolyxSelectEntityDescription, ...] = (
+    SolyxSelectEntityDescription(
+        key=ATTRIBUTE_OPERATING_MODE,
+        translation_key=camel_to_snake(ATTRIBUTE_OPERATING_MODE),
+        options_map=OPERATING_MODE_MAP,
+    ),
+)
+
+SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
+    SensorEntityDescription(
+        key=ATTRIBUTE_POWER_BOILER,
+        translation_key=camel_to_snake(ATTRIBUTE_POWER_BOILER),
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        native_unit_of_measurement="W",
+    ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_ENERGY_BOILER,
+        translation_key=camel_to_snake(ATTRIBUTE_ENERGY_BOILER),
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        suggested_display_precision=0,
+        native_unit_of_measurement="Wh",
+    ),
+    SensorEntityDescription(
+        key=ATTRIBUTE_GRID_POWER,
+        translation_key=camel_to_snake(ATTRIBUTE_GRID_POWER),
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+        native_unit_of_measurement="W",
     ),
 )

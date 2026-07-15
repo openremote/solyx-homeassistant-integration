@@ -1,6 +1,7 @@
 """Fixtures and helpers for the Solyx Energy tests."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -10,14 +11,17 @@ from pytest_homeassistant_custom_component.common import (
 
 from custom_components.solyx_energy.api import SolyxEnergyApiClient
 from custom_components.solyx_energy.const import (
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
+    CONF_NYMO_CLIENT_ID,
+    CONF_NYMO_CLIENT_SECRET,
     CONF_NYMO_DEVICE_ID,
     DOMAIN,
 )
 from homeassistant.util.json import json_loads
 
-from .const import CLIENT_ID, CLIENT_SECRET, NYMO_DEVICE_ID
+from .const import NYMO_CLIENT_ID, NYMO_CLIENT_SECRET, NYMO_DEVICE_ID
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -29,8 +33,8 @@ def mock_config_entry() -> MockConfigEntry:
         domain=DOMAIN,
         unique_id=NYMO_DEVICE_ID,
         data={
-            CONF_CLIENT_ID: CLIENT_ID,
-            CONF_CLIENT_SECRET: CLIENT_SECRET,
+            CONF_NYMO_CLIENT_ID: NYMO_CLIENT_ID,
+            CONF_NYMO_CLIENT_SECRET: NYMO_CLIENT_SECRET,
             CONF_NYMO_DEVICE_ID: NYMO_DEVICE_ID,
         },
         title=f"Nymo {NYMO_DEVICE_ID}",
@@ -66,7 +70,7 @@ def mock_setup_entry():
 
 
 @pytest.fixture
-async def init_integration(hass, mock_api_client_class, mock_config_entry):
+async def init_integration(hass: HomeAssistant, mock_api_client_class, mock_config_entry):
     """Set up the Solyx Energy integration and return the config entry."""
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)

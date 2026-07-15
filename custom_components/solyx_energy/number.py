@@ -8,10 +8,10 @@ from .entity import SolyxNymoEntity
 from .entity_descriptions import NUMBER_DESCRIPTIONS
 
 if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
+    from . import SolyxEnergyConfigEntry
     from .coordinator import SolyxEnergyCoordinator
 
 PARALLEL_UPDATES = 1
@@ -19,8 +19,8 @@ PARALLEL_UPDATES = 1
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    entry: SolyxEnergyConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up Solyx Energy number entities from a config entry."""
     coordinator: SolyxEnergyCoordinator = entry.runtime_data

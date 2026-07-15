@@ -38,27 +38,27 @@ class SolyxEnergyApiClient:
     def __init__(
         self,
         session: aiohttp.ClientSession,
-        client_id: str,
-        client_secret: str,
+        nymo_client_id: str,
+        nymo_client_secret: str,
     ) -> None:
         """Initialize the Solyx Energy API client."""
         self._session = session
-        self._client_id = client_id
-        self._client_secret = client_secret
+        self._nymo_client_id = nymo_client_id
+        self._nymo_client_secret = nymo_client_secret
         self._access_token: str | None = None
         self._token_expiry: float = 0.0
 
     async def _async_update_access_token(self) -> None:
         """Obtain the access token from the Keycloak HTTP token endpoint."""
         if self._access_token and time.monotonic() < self._token_expiry - 30:
-            _LOGGER.debug("Access token still valid, skipping refresh.")
+            _LOGGER.debug("Access token still valid, skipping refresh")
             return
 
         request_url = f"{BASE_URL}/auth/realms/{REALM_ID}/protocol/openid-connect/token"
         request_data = {
             "grant_type": "client_credentials",
-            "client_id": self._client_id,
-            "client_secret": self._client_secret,
+            "client_id": self._nymo_client_id,
+            "client_secret": self._nymo_client_secret,
         }
         try:
             async with self._session.post(
@@ -81,7 +81,7 @@ class SolyxEnergyApiClient:
         except (KeyError, TypeError, ValueError) as err:
             raise SolyxEnergyTokenError(f"Token request failed due to a parsing error: {err}") from err
 
-        _LOGGER.debug("Access token refreshed successfully.")
+        _LOGGER.debug("Access token refreshed successfully")
 
     def _get_auth_headers(self) -> dict[str, str]:
         """Retrieve the authorization header for HTTP requests to the Solyx Energy cloud environment."""
@@ -129,7 +129,7 @@ class SolyxEnergyApiClient:
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; error {response.status}") from None
 
-                _LOGGER.debug("%s has successfully been updated to %s.", attribute_name, value)
+                _LOGGER.debug("%s has successfully been updated to %s", attribute_name, value)
 
         except aiohttp.ClientError as err:
             raise SolyxEnergyWriteError(f"Failed to write device data to Solyx Energy cloud; {err}") from err

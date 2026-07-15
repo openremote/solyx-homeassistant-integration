@@ -1,5 +1,5 @@
 """Constants for the Solyx Energy tests."""
 
-CLIENT_ID = "test-client-id"
-CLIENT_SECRET = "test-client-secret"
+NYMO_CLIENT_ID = "test-client-id"
+NYMO_CLIENT_SECRET = "test-client-secret"
 NYMO_DEVICE_ID = "nymo-12345"

@@ -11,29 +11,28 @@
     "step": {
       "reauth_confirm": {
         "data": {
-          "client_id": "Client ID",
-          "client_secret": "Client Secret",
-          "nymo_device_id": "Nymo apparaat ID"
+          "nymo_client_id": "Client ID",
+          "nymo_client_secret": "Client Secret"
         },
         "data_description": {
-          "client_id": "Het Client ID dat je kunt kopiëren uit de Solyx Energy app.",
-          "client_secret": "Het Client Secret dat je kunt kopiëren uit de Solyx Energy app.",
-          "nymo_device_id": "Het Nymo apparaat ID dat je kunt kopiëren uit de Solyx Energy app."
+          "nymo_client_id": "Het Client ID dat je kunt kopiëren uit de Solyx Energy app.",
+          "nymo_client_secret": "Het Client Secret dat je kunt kopiëren uit de Solyx Energy app.",
         },
         "description": "Uw inloggegevens zijn niet meer geldig voor apparaat {device_id}. Voer opnieuw uw Client ID en Client Secret in.",
         "title": "Solyx Energy opnieuw verifiëren"
       },
       "user": {
         "data": {
-          "client_id": "Client ID",
-          "client_secret": "Client Secret",
+          "nymo_client_id": "Client ID",
+          "nymo_client_secret": "Client Secret",
           "nymo_device_id": "Nymo apparaat ID"
         },
         "data_description": {
-          "client_id": "Het Client ID dat je kunt kopiëren uit de Solyx Energy app.",
-          "client_secret": "Het Client Secret dat je kunt kopiëren uit de Solyx Energy app.",
+          "nymo_client_id": "Het Client ID dat je kunt kopiëren uit de Solyx Energy app.",
+          "nymo_client_secret": "Het Client Secret dat je kunt kopiëren uit de Solyx Energy app.",
           "nymo_device_id": "Het Nymo apparaat ID dat je kunt kopiëren uit de Solyx Energy app."
-        }
+        },
+        "description": "Stel je Nymo in voor de integratie met Home Assistant"
       }
     }
   },
