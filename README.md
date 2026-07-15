@@ -2,6 +2,14 @@
 
 Home Assistant integration for controlling and gaining insight in Solyx Energy devices
 
+## Supported platforms
+
+| Platform | Entities | Description |
+|----------|----------|-------------|
+| `sensor` | Power boiler, Energy to boiler, Grid power | Read-only measurements reported by the Nymo device |
+| `select` | Operating mode | Switch between `DIRECT` and `MUTED` operating modes |
+| `number` | Control value | Set the boiler control value (0–100%) |
+
 ## Install through Home Assistant
 The integration has not been released to the official Home Assistant store yet.<br />
 As an alternative, you can [install through HACS](#install-through-hacs)
@@ -34,7 +42,15 @@ pip install -e ".[dev]"
 python -m pytest
 ```
 
-This installs `homeassistant`, `pytest`, and `pytest-asyncio`.  
+This installs `homeassistant`, `pytest` utilities, `ruff`, and `mypy`.
+
+Lint and type-check before submitting:
+
+```bash
+ruff check .
+mypy custom_components tests
+```
+
 When you're ready to submit to home-assistant/core, copy:
 - `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`

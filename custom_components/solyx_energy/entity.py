@@ -1,7 +1,5 @@
 """Base entity for the Solyx Energy integration."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from homeassistant.helpers.device_registry import DeviceInfo

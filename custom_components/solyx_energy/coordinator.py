@@ -1,11 +1,9 @@
 """Coordinator file that handles data updates for Solyx Energy device entities."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers.event import async_call_later
@@ -69,9 +67,10 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.api_client = api_client
         self.device_id = device_id
         self._settle_unsub: CALLBACK_TYPE | None = None
-        if self.config_entry is not None:
-            self.config_entry.async_on_unload(self._async_cancel_settle_timer)
+        assert self.config_entry is not None
+        self.config_entry.async_on_unload(self._async_cancel_settle_timer)
 
+    @override
     async def _async_update_data(self) -> SolyxEnergyData:
         """Fetch data with the SolyxEnergyApiClient class and update the device entities accordingly."""
         try:

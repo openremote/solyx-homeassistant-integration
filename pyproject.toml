@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solyx-homeassistant-integration"
-version = "1.0.0"
+version = "0.4.0"
 description = "Solyx Energy integration for Home Assistant"
 requires-python = ">=3.14.2"
 dependencies = [
@@ -15,6 +15,8 @@ dependencies = [
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "pytest-homeassistant-custom-component>=0.13.0",
     "ruff>=0.6.0",
     "mypy>=1.11.0",
 ]
@@ -22,6 +24,12 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["custom_components/solyx_energy"]
+
+[tool.coverage.report]
+show_missing = true
 
 # Inspired by the lint configuration used by home-assistant/core, with additional stricter practices.
 # Uses ruff + mypy (instead of codespell/pylint)
@@ -47,6 +55,9 @@ ignore = [
     "ANN",     # no type annotations required in tests
     "D",       # no docstrings required in tests
     "PLR2004", # magic values OK in tests
+    "ARG001",  # unused fixture args (setup-fixture side effects)
+    "S105",    # test tokens are not real passwords
+    "SLF001",  # private member access needed to set up/test internal state
 ]
 
 [tool.ruff.lint.isort]
@@ -72,7 +83,13 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 show_error_codes = true
+explicit_package_bases = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = "pytest_homeassistant_custom_component.*"
+ignore_missing_imports = true

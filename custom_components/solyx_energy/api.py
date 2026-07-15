@@ -1,7 +1,5 @@
 """HTTP API functions for updating and retrieving data from the Solyx Energy cloud environment."""
 
-from __future__ import annotations
-
 from http import HTTPStatus
 import logging
 import time

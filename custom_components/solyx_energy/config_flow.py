@@ -1,8 +1,6 @@
 """Config flow for the Solyx Energy integration."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
 import voluptuous as vol
 
@@ -38,7 +36,7 @@ STEP_USER_SCHEMA = vol.Schema(
 
 # Schema definition for the reauthentication flow — only credentials are re-entered;
 # the device ID stays bound to the existing entry's unique ID.
-# When an incorrect device ID was given, we'd recommend users to reconfigure the device.
+# When an incorrect device ID was given, we'd recommend users to delete and reconfigure the device entry.
 STEP_REAUTH_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
@@ -54,6 +52,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @override
     async def async_step_user(
         self,
         user_input: dict[str, Any] | None = None,

@@ -1,8 +1,6 @@
 """Sensor entities for the Solyx Energy Nymo integration."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from homeassistant.components.sensor import SensorEntity
 
@@ -37,6 +35,7 @@ class SolyxSensorEntity(SolyxNymoEntity, SensorEntity):
     """A single Solyx Energy sensor entity."""
 
     @property
+    @override
     def native_value(self) -> StateType | None:
         """Retrieve the parsed (native) value of the sensor."""
         return getattr(self.coordinator.data, self.entity_description.key, None)
