@@ -33,7 +33,7 @@ USER_INPUT = {
 }
 
 
-async def test_user_flow(hass, mock_api_client_class):
+async def test_user_flow(hass, mock_api_client_class) -> None:
     """The happy path: submit valid credentials and an entry is created."""
     # Start the flow — form should be visible for the user.
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
@@ -53,7 +53,7 @@ async def test_user_flow(hass, mock_api_client_class):
     (SolyxEnergyTokenError, "data_error"),
     (SolyxEnergyDataError, "data_error"),
 ])
-async def test_user_flow_errors(hass, mock_api_client_class, side_effect, error_key):
+async def test_user_flow_errors(hass, mock_api_client_class, side_effect, error_key) -> None:
     """A failed connection test returns to the form with the right error (see pytest parameters)."""
     mock_api_client_class.async_test_connection.side_effect = side_effect
 
@@ -65,7 +65,7 @@ async def test_user_flow_errors(hass, mock_api_client_class, side_effect, error_
     assert result["errors"] == {"base": error_key}
 
 
-async def test_user_flow_already_configured(hass, mock_config_entry, mock_api_client_class):
+async def test_user_flow_already_configured(hass, mock_config_entry, mock_api_client_class) -> None:
     """Setting up the same device twice aborts with 'already_configured'."""
     mock_config_entry.add_to_hass(hass)
 
@@ -76,7 +76,7 @@ async def test_user_flow_already_configured(hass, mock_config_entry, mock_api_cl
     assert result["reason"] == "already_configured"
 
 
-async def test_reauth_flow(hass, mock_config_entry, mock_api_client_class):
+async def test_reauth_flow(hass, mock_config_entry, mock_api_client_class) -> None:
     """Re-authenticating with valid credentials updates the entry and aborts."""
     mock_config_entry.add_to_hass(hass)
 
@@ -105,7 +105,7 @@ async def test_reauth_flow(hass, mock_config_entry, mock_api_client_class):
     (SolyxEnergyTokenError, "data_error"),
     (SolyxEnergyDataError, "data_error"),
 ])
-async def test_reauth_flow_errors(hass, mock_config_entry, mock_api_client_class, side_effect, error_key):
+async def test_reauth_flow_errors(hass, mock_config_entry, mock_api_client_class, side_effect, error_key) -> None:
     """A failed connection test during reauth returns to the form with an error (see pytest parameters)."""
     mock_config_entry.add_to_hass(hass)
     mock_api_client_class.async_test_connection.side_effect = side_effect

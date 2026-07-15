@@ -12,7 +12,7 @@ from .const import NYMO_DEVICE_ID
     ("energyBoiler", ("5678.0", "Wh", "energy")),
     ("gridPower", ("-100.0", "W", "power")),
 ])
-async def test_sensor_states(hass, entity_registry, init_integration, key, expected):
+async def test_sensor_states(hass, entity_registry, init_integration, key, expected) -> None:
     """Test each sensor has the correct state, unit, and device class."""
     entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, f"{NYMO_DEVICE_ID}-{key}")
     assert entity_id is not None

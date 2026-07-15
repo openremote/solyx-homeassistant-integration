@@ -13,7 +13,7 @@ from homeassistant.exceptions import HomeAssistantError
 from .const import NYMO_DEVICE_ID
 
 
-async def test_select_state_and_write(hass, entity_registry, mock_solyx_api_client, init_integration):
+async def test_select_state_and_write(hass, entity_registry, mock_solyx_api_client, init_integration) -> None:
     """Test the select entity state, options, and write path."""
     entity_id = entity_registry.async_get_entity_id("select", DOMAIN, f"{NYMO_DEVICE_ID}-operatingMode")
     assert entity_id is not None
@@ -36,7 +36,7 @@ async def test_select_state_and_write(hass, entity_registry, mock_solyx_api_clie
     assert hass.states.get(entity_id).state == "MUTED"
 
 
-async def test_select_api_failure(hass, mock_solyx_api_client, init_integration):
+async def test_select_api_failure(hass, mock_solyx_api_client, init_integration) -> None:
     """Test that an API error (SolyxEnergyWriteError) during a write raises HomeAssistantError."""
     mock_solyx_api_client.async_set_asset_attribute.side_effect = SolyxEnergyWriteError
 

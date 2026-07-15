@@ -67,8 +67,8 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
         self.api_client = api_client
         self.device_id = device_id
         self._settle_unsub: CALLBACK_TYPE | None = None
-        if self.config_entry is not None:
-            self.config_entry.async_on_unload(self._async_cancel_settle_timer)
+        assert self.config_entry is not None
+        self.config_entry.async_on_unload(self._async_cancel_settle_timer)
 
     @override
     async def _async_update_data(self) -> SolyxEnergyData:

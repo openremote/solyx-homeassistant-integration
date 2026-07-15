@@ -36,7 +36,7 @@ STEP_USER_SCHEMA = vol.Schema(
 
 # Schema definition for the reauthentication flow — only credentials are re-entered;
 # the device ID stays bound to the existing entry's unique ID.
-# When an incorrect device ID was given, we'd recommend users to reconfigure the device.
+# When an incorrect device ID was given, we'd recommend users to delete and reconfigure the device entry.
 STEP_REAUTH_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CLIENT_ID): TextSelector(),
