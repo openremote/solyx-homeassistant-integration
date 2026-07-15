@@ -41,7 +41,7 @@ async def mock_session(aioclient_mock):
 
 @pytest.fixture
 def client(mock_session):
-    """An API client that already holds a valid (non-expired) token. (token refresh is tested separately)"""
+    """An API client that already holds a valid (non-expired) token (token refresh is tested separately)."""
     client = SolyxEnergyApiClient(mock_session, "test-id", "test-secret")
     client._access_token = "valid-token"
     client._token_expiry = time.monotonic() + 3600

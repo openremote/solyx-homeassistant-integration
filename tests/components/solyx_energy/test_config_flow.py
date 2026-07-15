@@ -54,7 +54,7 @@ async def test_user_flow(hass, mock_api_client_class):
     (SolyxEnergyDataError, "data_error"),
 ])
 async def test_user_flow_errors(hass, mock_api_client_class, side_effect, error_key):
-    """A failed connection test returns to the form with the right error. (see pytest parameters)"""
+    """A failed connection test returns to the form with the right error (see pytest parameters)."""
     mock_api_client_class.async_test_connection.side_effect = side_effect
 
     result = await hass.config_entries.flow.async_init(
@@ -106,7 +106,7 @@ async def test_reauth_flow(hass, mock_config_entry, mock_api_client_class):
     (SolyxEnergyDataError, "data_error"),
 ])
 async def test_reauth_flow_errors(hass, mock_config_entry, mock_api_client_class, side_effect, error_key):
-    """A failed connection test during reauth returns to the form with an error. (see pytest parameters)"""
+    """A failed connection test during reauth returns to the form with an error (see pytest parameters)."""
     mock_config_entry.add_to_hass(hass)
     mock_api_client_class.async_test_connection.side_effect = side_effect
 
