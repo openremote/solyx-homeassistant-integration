@@ -1,6 +1,6 @@
 """Config flow for the Solyx Energy integration."""
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
 import voluptuous as vol
 
@@ -52,6 +52,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @override
     async def async_step_user(
         self,
         user_input: dict[str, Any] | None = None,

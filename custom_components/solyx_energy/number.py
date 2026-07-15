@@ -1,6 +1,6 @@
 """Number entities for the Solyx Energy Nymo integration."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from homeassistant.components.number import NumberEntity
 
@@ -34,10 +34,12 @@ class SolyxNumberEntity(SolyxNymoEntity, NumberEntity):
     """A single Solyx Energy number entity, writable by the user."""
 
     @property
+    @override
     def native_value(self) -> float | None:
         """Return the current value of the number from the coordinator data."""
         return getattr(self.coordinator.data, self.entity_description.key, None)
 
+    @override
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value and push it to the Solyx cloud platform."""
         await self.coordinator.async_set_attribute(self.entity_description.key, value)

@@ -1,6 +1,6 @@
 """Select entities for the Solyx Energy Nymo integration."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from homeassistant.components.select import SelectEntity
 
@@ -34,10 +34,12 @@ class SolyxSelectEntity(SolyxNymoEntity, SelectEntity):
     """A single Solyx Energy select entity, writable by the user."""
 
     @property
+    @override
     def current_option(self) -> str | None:
         """Return the currently selected option from the coordinator data."""
         return getattr(self.coordinator.data, self.entity_description.key, None)
 
+    @override
     async def async_select_option(self, option: str) -> None:
         """Change the selected option and push it to the Solyx cloud platform."""
         await self.coordinator.async_set_attribute(self.entity_description.key, option)
