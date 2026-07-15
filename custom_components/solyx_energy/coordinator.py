@@ -1,7 +1,5 @@
 """Coordinator file that handles data updates for Solyx Energy device entities."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 import logging

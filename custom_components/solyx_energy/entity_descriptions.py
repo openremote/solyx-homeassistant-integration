@@ -1,7 +1,5 @@
 """Centralized entity descriptions for all Solyx Energy Nymo entity platforms."""
 
-from __future__ import annotations
-
 from homeassistant.components.number import NumberEntityDescription
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (

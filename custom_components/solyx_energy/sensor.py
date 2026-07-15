@@ -1,7 +1,5 @@
 """Sensor entities for the Solyx Energy Nymo integration."""
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from homeassistant.components.sensor import SensorEntity
