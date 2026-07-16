@@ -3,7 +3,7 @@
 from http import HTTPStatus
 import logging
 import time
-from typing import Any, cast
+from typing import Any
 
 import aiohttp
 
@@ -102,7 +102,11 @@ class SolyxEnergyApiClient:
                     raise SolyxEnergyAuthError("Failed to retrieve device data from Solyx Energy cloud; unauthorized.") from None
                 if response.status != HTTPStatus.OK:
                     raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; error {response.status}") from None
-                return cast("dict[str, Any]", await response.json())
+
+                response_payload = await response.json()
+                if not isinstance(response_payload, dict):
+                    raise SolyxEnergyDataError("Failed to retrieve device data due to an invalid response") from None
+                return response_payload
 
         except aiohttp.ClientError as err:
             raise SolyxEnergyDataError(f"Failed to retrieve device data from Solyx Energy cloud; {err}") from err
