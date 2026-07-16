@@ -95,6 +95,8 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             _LOGGER.debug("Updating entity %s in the Solyx cloud platform to %s", attribute_name, value)
             await self.api_client.async_set_asset_attribute(self.device_id, attribute_name, value)
         except SolyxEnergyAuthError as err:
+            if self.config_entry is not None:
+                self.config_entry.async_start_reauth_if_available(self.hass)
             raise ConfigEntryAuthFailed from err
         except (SolyxEnergyTokenError, SolyxEnergyWriteError) as err:
             raise HomeAssistantError(f"API error: {err}") from err

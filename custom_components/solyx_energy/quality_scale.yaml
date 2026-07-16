@@ -1,18 +1,26 @@
 rules:
   # Bronze
-  action-setup: done
+  action-setup:
+    status: exempt
+    comment: The integration does not provide additional actions.
   appropriate-polling: done
   brands: todo
   common-modules: done
   config-flow-test-coverage: done
   config-flow: done
   dependency-transparency: done
-  docs-actions: done
-  docs-conditions: done
+  docs-actions:
+    status: exempt
+    comment: The integration does not provide additional actions.
+  docs-conditions:
+    status: exempt
+    comment: The integration does not provide conditions.
   docs-high-level-description: todo
   docs-installation-instructions: todo
   docs-removal-instructions: todo
-  docs-triggers: done
+  docs-triggers:
+    status: exempt
+    comment: The integration does not provide triggers.
   entity-event-setup: done
   entity-unique-id: done
   has-entity-name: done

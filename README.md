@@ -32,7 +32,7 @@ Installation steps:
 6. In the search field, type in "Solyx Energy", click on it, and download the integration.
 7. Restart Home Assistant
 8. Once restarted, go to Settings → Devices & services → Click on **Add integration** on the bottom left → add the Solyx Energy integration.
-9. Copy the Client ID, Client secret and Nymo device ID from the Solyx Energy app, and paste them in here.
+9. Copy the Client ID, Client Secret and Nymo device ID from the Solyx Energy app, and paste them in here.
 10. Press **Submit**, and you're good to go!
 
 ## Development
