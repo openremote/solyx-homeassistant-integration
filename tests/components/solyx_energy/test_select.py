@@ -60,6 +60,7 @@ async def test_select_api_failure(
     """Test that an API error (SolyxEnergyWriteError) during a write raises HomeAssistantError."""
     mock_solyx_api_client.async_set_asset_attribute.side_effect = SolyxEnergyWriteError
     entity_id = entity_registry.async_get_entity_id("select", DOMAIN, f"{NYMO_DEVICE_ID}-operatingMode")
+    assert entity_id is not None
 
     with pytest.raises(HomeAssistantError):
         await hass.services.async_call(
