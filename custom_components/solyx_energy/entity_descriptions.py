@@ -1,14 +1,6 @@
 """Centralized entity descriptions for all Solyx Energy Nymo entity platforms."""
 from dataclasses import dataclass
 
-from solyx_energy_api.const import (
-    ATTRIBUTE_CONTROL_VALUE,
-    ATTRIBUTE_ENERGY_BOILER,
-    ATTRIBUTE_GRID_POWER,
-    ATTRIBUTE_OPERATING_MODE,
-    ATTRIBUTE_POWER_BOILER,
-)
-
 from homeassistant.components.number import NumberEntityDescription
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (
@@ -18,6 +10,13 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import PERCENTAGE, UnitOfEnergy, UnitOfPower
 
+from .const import (
+    ATTRIBUTE_CONTROL_VALUE,
+    ATTRIBUTE_ENERGY_BOILER,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_OPERATING_MODE,
+    ATTRIBUTE_POWER_BOILER,
+)
 from .util import camel_to_snake
 
 

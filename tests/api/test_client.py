@@ -25,30 +25,22 @@ ATTRIBUTE_URL = f"{BASE_URL}/api/{REALM_ID}/asset/{DEVICE_ID}/attribute/{ATTRIBU
 
 
 class MockResponse:
-    """Minimal async response context manager used by the client."""
-
     def __init__(self, status: int = 200, payload: object = None) -> None:
-        """Initialize the response."""
         self.status = status
         self._payload = payload
 
     async def __aenter__(self) -> Self:
-        """Enter the response context manager."""
         return self
 
     async def __aexit__(self, *_args: object) -> None:
-        """Exit the response context manager."""
+        pass
 
     async def json(self) -> object:
-        """Return the configured JSON payload."""
         return self._payload
 
 
 class MockSession:
-    """Minimal aiohttp session double that records requests."""
-
     def __init__(self) -> None:
-        """Initialize the session double."""
         self.responses: dict[tuple[str, str], MockResponse] = {}
         self.requests: list[tuple[str, str, dict[str, Any]]] = []
 
@@ -60,36 +52,35 @@ class MockSession:
         status: int = 200,
         payload: object = None,
     ) -> None:
-        """Configure a response for a method and URL."""
         self.responses[(method, url)] = MockResponse(status, payload)
 
     def _request(self, method: str, url: str, **kwargs: Any) -> MockResponse:
-        """Record a request and return its configured response."""
         self.requests.append((method, url, kwargs))
         return self.responses[(method, url)]
 
     def post(self, url: str, **kwargs: Any) -> MockResponse:
-        """Handle a mocked POST request."""
         return self._request("POST", url, **kwargs)
 
     def get(self, url: str, **kwargs: Any) -> MockResponse:
-        """Handle a mocked GET request."""
         return self._request("GET", url, **kwargs)
 
     def put(self, url: str, **kwargs: Any) -> MockResponse:
-        """Handle a mocked PUT request."""
         return self._request("PUT", url, **kwargs)
 
 
 @pytest.fixture
 def mock_session() -> MockSession:
-    """Return a standalone session double."""
     return MockSession()
 
 
 @pytest.fixture
 def client(mock_session: MockSession) -> SolyxEnergyApiClient:
-    """Return an API client with a valid cached token."""
+    return create_client(mock_session, cached_token=True)
+
+
+def create_client(
+    mock_session: MockSession, *, cached_token: bool = False,
+) -> SolyxEnergyApiClient:
     client = SolyxEnergyApiClient(
         mock_session,  # type: ignore[arg-type]
         "test-id",
@@ -97,21 +88,16 @@ def client(mock_session: MockSession) -> SolyxEnergyApiClient:
         base_url=BASE_URL,
         realm_id=REALM_ID,
     )
-    client._access_token = "valid-token"
-    client._token_expiry = time.monotonic() + 3600
+    if cached_token:
+        client._access_token = "valid-token"
+        client._token_expiry = time.monotonic() + 3600
     return client
 
 
 async def test_token_refresh_success(mock_session: MockSession) -> None:
     """A successful token request stores the access token from the response."""
     mock_session.add_response("POST", TOKEN_URL, payload=TOKEN_PAYLOAD)
-    client = SolyxEnergyApiClient(
-        mock_session,  # type: ignore[arg-type]
-        "test-id",
-        "test-secret",
-        base_url=BASE_URL,
-        realm_id=REALM_ID,
-    )
+    client = create_client(mock_session)
     await client._async_update_access_token()
     assert client._access_token == "new-token"
 
@@ -119,13 +105,7 @@ async def test_token_refresh_success(mock_session: MockSession) -> None:
 async def test_token_refresh_auth_error(mock_session: MockSession) -> None:
     """A 401 from the token endpoint means the credentials are wrong."""
     mock_session.add_response("POST", TOKEN_URL, status=401)
-    client = SolyxEnergyApiClient(
-        mock_session,  # type: ignore[arg-type]
-        "test-id",
-        "test-secret",
-        base_url=BASE_URL,
-        realm_id=REALM_ID,
-    )
+    client = create_client(mock_session)
     with pytest.raises(SolyxEnergyAuthError):
         await client._async_update_access_token()
 
@@ -133,13 +113,7 @@ async def test_token_refresh_auth_error(mock_session: MockSession) -> None:
 async def test_token_refresh_token_error(mock_session: MockSession) -> None:
     """A non-auth HTTP failure raises SolyxEnergyTokenError."""
     mock_session.add_response("POST", TOKEN_URL, status=503)
-    client = SolyxEnergyApiClient(
-        mock_session,  # type: ignore[arg-type]
-        "test-id",
-        "test-secret",
-        base_url=BASE_URL,
-        realm_id=REALM_ID,
-    )
+    client = create_client(mock_session)
     with pytest.raises(SolyxEnergyTokenError):
         await client._async_update_access_token()
 

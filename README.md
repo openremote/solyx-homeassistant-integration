@@ -64,13 +64,17 @@ The API package is published from `libraries/api` by manually running
 
 To publish a version:
 
-1. Update the `version` in `libraries/api/pyproject.toml`.
+1. Update the `version` in `libraries/api/pyproject.toml`
 2. Commit and push the change.
 3. Open the repository's **Actions** tab and select **Publish API package**.
 4. Click **Run workflow**, select the branch containing the version change,
    and run it.
 
+Once it's published, don't forget to modify the version within the HomeAssistant integration manifest.
+
 ### Publish to the `homeassistant/core` repository
 When you're ready to submit to home-assistant/core, copy these folders to to the HomeAssistant fork within the organization.
 - `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`
+
+> **PLEASE DO NOT COPY `tests/components/solyx_energy/conftest.py`**, HomeAssistant has their own.
