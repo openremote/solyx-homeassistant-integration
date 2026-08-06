@@ -76,5 +76,3 @@ Once it's published, don't forget to modify the version within the HomeAssistant
 When you're ready to submit to home-assistant/core, copy these folders to to the HomeAssistant fork within the organization.
 - `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`
-
-> **PLEASE DO NOT COPY `tests/components/solyx_energy/conftest.py`**, HomeAssistant has their own.
