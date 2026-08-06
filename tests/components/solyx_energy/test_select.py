@@ -3,8 +3,8 @@
 from typing import TYPE_CHECKING
 
 import pytest
+from solyx_energy_api.exceptions import SolyxEnergyWriteError
 
-from custom_components.solyx_energy.api import SolyxEnergyWriteError
 from custom_components.solyx_energy.const import DOMAIN
 from homeassistant.components.select import (
     DOMAIN as SELECT_DOMAIN,

@@ -23,10 +23,11 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["libraries/api"]
 asyncio_mode = "auto"
 
 [tool.coverage.run]
-source = ["custom_components/solyx_energy"]
+source = ["custom_components/solyx_energy", "libraries/api/solyx_energy_api"]
 
 [tool.coverage.report]
 show_missing = true
@@ -79,6 +80,7 @@ mark-parentheses = false
 # Mypy configuration
 [tool.mypy]
 python_version = "3.14"
+mypy_path = ["libraries/api"]
 strict = true
 warn_return_any = true
 warn_unused_configs = true

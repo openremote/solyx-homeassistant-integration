@@ -38,21 +38,39 @@ Installation steps:
 ## Development
 
 ```bash
-pip install -e ".[dev]"
+python -m pip install -e ".[dev]"
+python -m pip install -e ./libraries/api
 python -m pytest
 ```
 
-This installs `homeassistant`, `pytest` utilities, `ruff`, and `mypy`.
+The first command installs `homeassistant`, pytest utilities, `ruff`, and
+`mypy`. The second installs the local API package in editable mode.
 
 Lint and type-check before submitting:
 
 ```bash
 ruff check .
-mypy custom_components tests
+mypy libraries/api/solyx_energy_api custom_components
 ```
 
-When you're ready to submit to home-assistant/core, copy:
+The API package is published separately and is installed by Home Assistant
+through the integration requirement in `manifest.json`.
+
+## Publishing
+### Publish the API package
+
+The API package is published from `libraries/api` by manually running
+`.github/workflows/publish-api.yml`. It uses PyPI Trusted Publishing.
+
+To publish a version:
+
+1. Update the `version` in `libraries/api/pyproject.toml`.
+2. Commit and push the change.
+3. Open the repository's **Actions** tab and select **Publish API package**.
+4. Click **Run workflow**, select the branch containing the version change,
+   and run it.
+
+### Publish to the `homeassistant/core` repository
+When you're ready to submit to home-assistant/core, copy these folders to to the HomeAssistant fork within the organization.
 - `custom_components/solyx_energy/`
 - `tests/components/solyx_energy/`
-
-(Do *not* copy `tests/conftest.py` — HA Core has its own.)

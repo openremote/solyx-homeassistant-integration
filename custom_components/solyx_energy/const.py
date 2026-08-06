@@ -12,10 +12,3 @@ DATA_SETTLE_SECONDS = 2
 CONF_NYMO_CLIENT_ID = "nymo_client_id"
 CONF_NYMO_CLIENT_SECRET = "nymo_client_secret"   # noqa: S105
 CONF_NYMO_DEVICE_ID = "nymo_device_id"
-
-# Device attributes in camelCase for mapping the HTTP API response to a device entity
-ATTRIBUTE_POWER_BOILER = "powerBoiler"
-ATTRIBUTE_ENERGY_BOILER = "energyBoiler"
-ATTRIBUTE_OPERATING_MODE = "operatingMode"
-ATTRIBUTE_GRID_POWER = "gridPower"
-ATTRIBUTE_CONTROL_VALUE = "controlValue"

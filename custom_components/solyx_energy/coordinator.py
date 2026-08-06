@@ -5,30 +5,30 @@ from datetime import datetime, timedelta
 import logging
 from typing import TYPE_CHECKING, override
 
-from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
-from homeassistant.helpers.event import async_call_later
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from .api import (
-    SolyxEnergyApiClient,
-    SolyxEnergyAuthError,
-    SolyxEnergyDataError,
-    SolyxEnergyTokenError,
-    SolyxEnergyWriteError,
-)
-from .const import (
+from solyx_energy_api.const import (
     ATTRIBUTE_CONTROL_VALUE,
     ATTRIBUTE_ENERGY_BOILER,
     ATTRIBUTE_GRID_POWER,
     ATTRIBUTE_OPERATING_MODE,
     ATTRIBUTE_POWER_BOILER,
-    DATA_INTERVAL_SECONDS,
-    DATA_SETTLE_SECONDS,
-    DOMAIN,
 )
-from .util import parse_attr_value, parse_float
+from solyx_energy_api.exceptions import (
+    SolyxEnergyAuthError,
+    SolyxEnergyDataError,
+    SolyxEnergyTokenError,
+    SolyxEnergyWriteError,
+)
+from solyx_energy_api.util import parse_attr_value, parse_float
+
+from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
+from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+from .const import DATA_INTERVAL_SECONDS, DATA_SETTLE_SECONDS, DOMAIN
 
 if TYPE_CHECKING:
+    from solyx_energy_api.client import SolyxEnergyApiClient
+
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 

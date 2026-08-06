@@ -8,8 +8,8 @@ import pytest
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,  # Change to tests.common when merging into home-assistant/core
 )
+from solyx_energy_api.client import SolyxEnergyApiClient
 
-from custom_components.solyx_energy.api import SolyxEnergyApiClient
 from custom_components.solyx_energy.const import (
     CONF_NYMO_CLIENT_ID,
     CONF_NYMO_CLIENT_SECRET,
@@ -24,6 +24,11 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture(autouse=True)
+def auto_enable_custom_integrations(enable_custom_integrations):
+    """Enable custom integrations for Home Assistant component tests."""
 
 
 @pytest.fixture
