@@ -16,7 +16,7 @@ BASE_URL = "https://staging.cloud.solyxenergy.nl"
 REALM_ID = "solyx"
 DEVICE_ID = "nymo-12345"
 TOKEN_PAYLOAD = {"access_token": "new-token", "expires_in": 300}
-ASSET_PAYLOAD = {"attributes": {"powerBoiler": {"value": 100.0}}}
+ASSET_PAYLOAD = {"attributes": {"boilerPower": {"value": 100.0}}}
 ATTRIBUTE_NAME = "operatingMode"
 
 TOKEN_URL = f"{BASE_URL}/auth/realms/{REALM_ID}/protocol/openid-connect/token"

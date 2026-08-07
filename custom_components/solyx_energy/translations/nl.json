@@ -37,20 +37,6 @@
     }
   },
   "entity": {
-    "number": {
-      "controlValue": {
-        "name": "Regelwaarde"
-      }
-    },
-    "select": {
-      "operatingMode": {
-        "name": "Operatiemodus",
-        "state": {
-          "DIRECT": "Direct",
-          "MUTED": "Muted"
-        }
-      }
-    },
     "sensor": {
       "energyBoiler": {
         "name": "Stroom naar boiler"
@@ -58,7 +44,7 @@
       "gridPower": {
         "name": "Stroom van het net"
       },
-      "powerBoiler": {
+      "boilerPower": {
         "name": "Verbruik boiler"
       }
     }

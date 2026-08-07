@@ -7,8 +7,6 @@ Home Assistant integration for controlling and gaining insight in Solyx Energy d
 | Platform | Entities | Description |
 |----------|----------|-------------|
 | `sensor` | Power boiler, Energy to boiler, Grid power | Read-only measurements reported by the Nymo device |
-| `select` | Operating mode | Switch between `DIRECT` and `MUTED` operating modes |
-| `number` | Control value | Set the boiler control value (0–100%) |
 
 ## Install through Home Assistant
 The integration has not been released to the official Home Assistant store yet.<br />
