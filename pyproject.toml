@@ -83,6 +83,7 @@ mark-parentheses = false
 # Mypy configuration
 [tool.mypy]
 python_version = "3.14"
+mypy_path = ["libraries/api"] # reference local packages
 strict = true
 warn_return_any = true
 warn_unused_configs = true
