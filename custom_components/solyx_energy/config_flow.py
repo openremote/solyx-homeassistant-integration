@@ -1,8 +1,13 @@
 """Config flow for the Solyx Energy integration."""
 
-from collections.abc import Mapping
-from typing import Any, override
+from typing import TYPE_CHECKING, Any, override
 
+from solyx_energy_api.client import SolyxEnergyApiClient
+from solyx_energy_api.exceptions import (
+    SolyxEnergyAuthError,
+    SolyxEnergyDataError,
+    SolyxEnergyTokenError,
+)
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
@@ -13,18 +18,17 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 
-from .api import (
-    SolyxEnergyApiClient,
-    SolyxEnergyAuthError,
-    SolyxEnergyDataError,
-    SolyxEnergyTokenError,
-)
 from .const import (
+    BASE_URL,
     CONF_NYMO_CLIENT_ID,
     CONF_NYMO_CLIENT_SECRET,
     CONF_NYMO_DEVICE_ID,
     DOMAIN,
+    REALM_ID,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 # Schema definition for the initial user setup
 STEP_USER_SCHEMA = vol.Schema(
@@ -134,5 +138,7 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
             session=session,
             nymo_client_id=user_input[CONF_NYMO_CLIENT_ID],
             nymo_client_secret=user_input[CONF_NYMO_CLIENT_SECRET],
+            base_url=BASE_URL,
+            realm_id=REALM_ID,
         )
         await client.async_test_connection(user_input[CONF_NYMO_DEVICE_ID])

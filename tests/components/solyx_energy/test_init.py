@@ -7,12 +7,12 @@ with the API client mocked at the class level, so no network calls are made.
 from typing import TYPE_CHECKING
 
 import pytest
-
-from custom_components.solyx_energy.api import (
+from solyx_energy_api.exceptions import (
     SolyxEnergyAuthError,
     SolyxEnergyDataError,
     SolyxEnergyTokenError,
 )
+
 from custom_components.solyx_energy.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 
