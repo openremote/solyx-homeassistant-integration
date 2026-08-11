@@ -38,9 +38,6 @@
   },
   "entity": {
     "sensor": {
-      "energyBoiler": {
-        "name": "Stroom naar boiler"
-      },
       "gridPower": {
         "name": "Stroom van het net"
       },
