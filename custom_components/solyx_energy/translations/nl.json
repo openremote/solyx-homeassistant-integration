@@ -38,14 +38,32 @@
   },
   "entity": {
     "sensor": {
-      "energyBoiler": {
-        "name": "Stroom naar boiler"
+      "boiler_current": {
+        "name": "Stroomsterkte boiler"
       },
-      "gridPower": {
+      "boiler_power": {
+        "name": "Verbruik boiler"
+      },
+      "boiler_voltage": {
+        "name": "Spanning boiler"
+      },
+      "days_since_max_temperature": {
+        "name": "Dagen sinds maximale temperatuur"
+      },
+      "grid_power": {
         "name": "Stroom van het net"
       },
-      "boilerPower": {
-        "name": "Verbruik boiler"
+      "legionella_days": {
+        "name": "Legionelladagen"
+      },
+      "saved_this_month": {
+        "name": "Deze maand bespaard"
+      },
+      "saved_this_week": {
+        "name": "Deze week bespaard"
+      },
+      "saved_today": {
+        "name": "Vandaag bespaard"
       }
     }
   }
