@@ -17,12 +17,21 @@ from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    ATTRIBUTE_BOILER_POWER, ATTRIBUTE_GRID_POWER, DATA_INTERVAL_SECONDS, DATA_SETTLE_SECONDS,
-    DOMAIN, ATTRIBUTE_BOILER_CURRENT, ATTRIBUTE_BOILER_VOLTAGE, ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE,
-    ATTRIBUTE_LEGIONELLA_DAYS, ATTRIBUTE_LEGIONELLA_ENABLED, ATTRIBUTE_SAVED_THIS_MONTH, ATTRIBUTE_SAVED_THIS_WEEK,
+    ATTRIBUTE_BOILER_CURRENT,
+    ATTRIBUTE_BOILER_POWER,
+    ATTRIBUTE_BOILER_VOLTAGE,
+    ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_LEGIONELLA_DAYS,
+    ATTRIBUTE_LEGIONELLA_ENABLED,
+    ATTRIBUTE_SAVED_THIS_MONTH,
+    ATTRIBUTE_SAVED_THIS_WEEK,
     ATTRIBUTE_SAVED_TODAY,
+    DATA_INTERVAL_SECONDS,
+    DATA_SETTLE_SECONDS,
+    DOMAIN,
 )
-from .util import parse_float, parse_attr_value
+from .util import parse_attr_value, parse_float
 
 if TYPE_CHECKING:
     from solyx_energy_api.client import SolyxEnergyApiClient
@@ -94,7 +103,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             legionellaEnabled=parse_attr_value(nymo_data, ATTRIBUTE_LEGIONELLA_ENABLED),
             savedThisMonth=parse_float(nymo_data, ATTRIBUTE_SAVED_THIS_MONTH),
             savedThisWeek=parse_float(nymo_data, ATTRIBUTE_SAVED_THIS_WEEK),
-            savedToday=parse_float(nymo_data, ATTRIBUTE_SAVED_TODAY)
+            savedToday=parse_float(nymo_data, ATTRIBUTE_SAVED_TODAY),
         )
 
     async def async_set_attribute(self, attribute_name: str, value: object) -> None:

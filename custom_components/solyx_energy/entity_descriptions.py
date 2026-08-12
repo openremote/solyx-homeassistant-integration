@@ -5,11 +5,26 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import UnitOfEnergy, UnitOfPower, UnitOfElectricPotential, UnitOfElectricCurrent, UnitOfTime
+from homeassistant.const import (
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
+    UnitOfEnergy,
+    UnitOfPower,
+    UnitOfTime,
+)
 
-from .const import ATTRIBUTE_BOILER_POWER, ATTRIBUTE_GRID_POWER, ATTRIBUTE_BOILER_CURRENT, \
-    ATTRIBUTE_BOILER_VOLTAGE, ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE, ATTRIBUTE_LEGIONELLA_DAYS, \
-    ATTRIBUTE_LEGIONELLA_ENABLED, ATTRIBUTE_SAVED_THIS_MONTH, ATTRIBUTE_SAVED_THIS_WEEK, ATTRIBUTE_SAVED_TODAY
+from .const import (
+    ATTRIBUTE_BOILER_CURRENT,
+    ATTRIBUTE_BOILER_POWER,
+    ATTRIBUTE_BOILER_VOLTAGE,
+    ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE,
+    ATTRIBUTE_GRID_POWER,
+    ATTRIBUTE_LEGIONELLA_DAYS,
+    ATTRIBUTE_LEGIONELLA_ENABLED,
+    ATTRIBUTE_SAVED_THIS_MONTH,
+    ATTRIBUTE_SAVED_THIS_WEEK,
+    ATTRIBUTE_SAVED_TODAY,
+)
 from .util import camel_to_snake
 
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
@@ -71,7 +86,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=0,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_SAVED_THIS_WEEK,
@@ -79,7 +94,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=0,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_SAVED_TODAY,
@@ -87,6 +102,6 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=0,
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR
-    )
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+    ),
 )
