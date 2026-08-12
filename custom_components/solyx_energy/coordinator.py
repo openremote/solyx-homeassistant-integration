@@ -48,7 +48,7 @@ class SolyxEnergyData:
     boilerCurrent: float | None  # noqa: N815
     boilerPower: float | None  # noqa: N815
     boilerVoltage: float | None  # noqa: N815
-    daysSinceMaxTemperature: float | None  # noqa: N815
+    daysSinceMaximumTemperature: float | None  # noqa: N815
     gridPower: float | None  # noqa: N815
     legionellaDays: float | None  # noqa: N815
     savedThisMonth: float | None  # noqa: N815
@@ -95,7 +95,7 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             boilerCurrent=parse_float(nymo_data, ATTRIBUTE_BOILER_CURRENT),
             boilerPower=parse_float(nymo_data, ATTRIBUTE_BOILER_POWER),
             boilerVoltage=parse_float(nymo_data, ATTRIBUTE_BOILER_VOLTAGE),
-            daysSinceMaxTemperature=parse_float(nymo_data, ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE),
+            daysSinceMaximumTemperature=parse_float(nymo_data, ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE),
             gridPower=parse_float(nymo_data, ATTRIBUTE_GRID_POWER),
             legionellaDays=parse_float(nymo_data, ATTRIBUTE_LEGIONELLA_DAYS),
             savedThisMonth=parse_float(nymo_data, ATTRIBUTE_SAVED_THIS_MONTH),
