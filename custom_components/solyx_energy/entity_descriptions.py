@@ -20,7 +20,6 @@ from .const import (
     ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE,
     ATTRIBUTE_GRID_POWER,
     ATTRIBUTE_LEGIONELLA_DAYS,
-    ATTRIBUTE_LEGIONELLA_ENABLED,
     ATTRIBUTE_SAVED_THIS_MONTH,
     ATTRIBUTE_SAVED_THIS_WEEK,
     ATTRIBUTE_SAVED_TODAY,
@@ -73,12 +72,6 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.DURATION,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=UnitOfTime.DAYS,
-    ),
-    SensorEntityDescription(
-        key=ATTRIBUTE_LEGIONELLA_ENABLED,
-        translation_key=camel_to_snake(ATTRIBUTE_LEGIONELLA_ENABLED),
-        device_class=SensorDeviceClass.ENUM,
-        options=["true", "false"],
     ),
     SensorEntityDescription(
         key=ATTRIBUTE_SAVED_THIS_MONTH,

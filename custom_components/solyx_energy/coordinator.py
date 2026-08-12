@@ -23,7 +23,6 @@ from .const import (
     ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE,
     ATTRIBUTE_GRID_POWER,
     ATTRIBUTE_LEGIONELLA_DAYS,
-    ATTRIBUTE_LEGIONELLA_ENABLED,
     ATTRIBUTE_SAVED_THIS_MONTH,
     ATTRIBUTE_SAVED_THIS_WEEK,
     ATTRIBUTE_SAVED_TODAY,
@@ -52,7 +51,6 @@ class SolyxEnergyData:
     daysSinceMaxTemperature: float | None  # noqa: N815
     gridPower: float | None  # noqa: N815
     legionellaDays: float | None  # noqa: N815
-    legionellaEnabled: bool | None  # noqa: N815
     savedThisMonth: float | None  # noqa: N815
     savedThisWeek: float | None  # noqa: N815
     savedToday: float | None  # noqa: N815
@@ -100,7 +98,6 @@ class SolyxEnergyCoordinator(DataUpdateCoordinator[SolyxEnergyData]):
             daysSinceMaxTemperature=parse_float(nymo_data, ATTRIBUTE_DAYS_SINCE_MAX_TEMPERATURE),
             gridPower=parse_float(nymo_data, ATTRIBUTE_GRID_POWER),
             legionellaDays=parse_float(nymo_data, ATTRIBUTE_LEGIONELLA_DAYS),
-            legionellaEnabled=parse_attr_value(nymo_data, ATTRIBUTE_LEGIONELLA_ENABLED),
             savedThisMonth=parse_float(nymo_data, ATTRIBUTE_SAVED_THIS_MONTH),
             savedThisWeek=parse_float(nymo_data, ATTRIBUTE_SAVED_THIS_WEEK),
             savedToday=parse_float(nymo_data, ATTRIBUTE_SAVED_TODAY),
