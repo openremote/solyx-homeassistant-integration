@@ -30,7 +30,7 @@ from .const import (
     DATA_SETTLE_SECONDS,
     DOMAIN,
 )
-from .util import parse_attr_value, parse_float
+from .util import parse_float
 
 if TYPE_CHECKING:
     from solyx_energy_api.client import SolyxEnergyApiClient
