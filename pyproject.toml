@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solyx-homeassistant-integration"
-version = "0.4.0"
+version = "0.4.1"
 description = "Solyx Energy integration for Home Assistant"
 requires-python = ">=3.14.2"
 dependencies = [
