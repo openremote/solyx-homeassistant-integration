@@ -141,4 +141,4 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
             base_url=BASE_URL,
             realm_id=REALM_ID,
         )
-        await client.async_test_connection(user_input[CONF_NYMO_DEVICE_ID])
+        await client.async_test_connection()

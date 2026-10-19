@@ -229,4 +229,4 @@ async def test_test_connection_success(
 ) -> None:
     """async_test_connection validates credentials by fetching asset data."""
     mock_session.add_response("GET", ASSET_URL, payload=ASSET_PAYLOAD)
-    await client.async_test_connection(DEVICE_ID)
+    await client.async_test_connection()
