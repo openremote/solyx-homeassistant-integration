@@ -105,6 +105,44 @@ class SolyxEnergyApiClient:
         except ValueError as err:
             raise SolyxEnergyDataError(f"Failed to retrieve device data due to a parsing error: {err}") from err
 
+    async def async_get_assets(self) -> list[dict[str, Any]]:
+        """Fetch all Nymo assets of the realm from the Solyx Energy cloud API, newest first."""
+        await self._async_update_access_token()
+
+        request_url = f"{self._base_url}/api/{self._realm_id}/asset/query"
+        request_payload = {
+            "realm": {"name": self._realm_id},
+            "types": ["NymoAsset"],
+            "orderBy": {"property": "CREATED_ON", "descending": True},
+        }
+        try:
+            async with self._session.post(
+                request_url,
+                headers={**self._get_auth_headers(), "Content-Type": "application/json"},
+                json=request_payload,
+            ) as response:
+                if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+                    self._access_token = None
+                    raise SolyxEnergyAuthError(
+                        "Failed to retrieve assets from Solyx Energy cloud; unauthorized.",
+                    ) from None
+                if response.status != HTTPStatus.OK:
+                    raise SolyxEnergyDataError(
+                        f"Failed to retrieve assets from Solyx Energy cloud; error {response.status}",
+                    ) from None
+
+                response_payload = await response.json()
+                if not isinstance(response_payload, list):
+                    raise SolyxEnergyDataError("Failed to retrieve assets due to an invalid response") from None
+                return response_payload
+
+        except aiohttp.ClientError as err:
+            raise SolyxEnergyDataError(f"Failed to retrieve assets from Solyx Energy cloud; {err}") from err
+        except TimeoutError as err:
+            raise SolyxEnergyDataError("Failed to retrieve assets from Solyx Energy cloud; request timed out.") from err
+        except ValueError as err:
+            raise SolyxEnergyDataError(f"Failed to retrieve assets due to a parsing error: {err}") from err
+
     async def async_set_asset_attribute(
         self, asset_id: str, attribute_name: str, value: object,
     ) -> None:
