@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "solyx-energy-api-client"
-version = "0.1.1"
+version = "0.2.0"
 license = "MIT"
 license-files = ["LICENSE"]
 description = "Async API client for Solyx Energy devices"
