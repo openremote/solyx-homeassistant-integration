@@ -173,5 +173,5 @@ class SolyxEnergyApiClient:
             raise SolyxEnergyWriteError("Failed to write device data to Solyx Energy cloud; request timed out.") from err
 
     async def async_test_connection(self) -> None:
-        """Validate credentials and the existence of a device."""
+        """Validate credentials by fetching the user's assets."""
         await self.async_get_assets()

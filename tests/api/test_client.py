@@ -227,6 +227,6 @@ async def test_set_asset_attribute_auth_error(
 async def test_test_connection_success(
     mock_session: MockSession, client: SolyxEnergyApiClient,
 ) -> None:
-    """async_test_connection validates credentials by fetching asset data."""
-    mock_session.add_response("GET", ASSET_URL, payload=ASSET_PAYLOAD)
+    """async_test_connection validates credentials by querying the user's assets."""
+    mock_session.add_response("POST", ASSETS_URL, payload=ASSETS_PAYLOAD)
     await client.async_test_connection()
