@@ -118,7 +118,7 @@ class SolyxEnergyApiClient:
         try:
             async with self._session.post(
                 request_url,
-                headers={**self._get_auth_headers(), "Content-Type": "application/json"},
+                headers=self._get_auth_headers(),
                 json=request_payload,
             ) as response:
                 if response.status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):

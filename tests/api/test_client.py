@@ -163,7 +163,6 @@ async def test_get_assets_success(
     assert result == ASSETS_PAYLOAD
     request = mock_session.requests[-1][2]
     assert request["headers"]["Authorization"] == "Bearer valid-token"
-    assert request["headers"]["Content-Type"] == "application/json"
     assert request["json"] == ASSETS_QUERY
 
 
