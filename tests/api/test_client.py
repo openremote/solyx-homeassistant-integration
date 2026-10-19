@@ -17,9 +17,16 @@ REALM_ID = "solyx"
 DEVICE_ID = "nymo-12345"
 TOKEN_PAYLOAD = {"access_token": "new-token", "expires_in": 300}
 ASSET_PAYLOAD = {"attributes": {"boilerPower": {"value": 100.0}}}
+ASSETS_PAYLOAD = [{"id": DEVICE_ID, "name": "Nymo", "type": "NymoAsset", "attributes": ASSET_PAYLOAD["attributes"]}]
 ATTRIBUTE_NAME = "operatingMode"
 
 TOKEN_URL = f"{BASE_URL}/auth/realms/{REALM_ID}/protocol/openid-connect/token"
+ASSETS_URL = f"{BASE_URL}/api/{REALM_ID}/asset/query"
+ASSETS_QUERY = {
+    "realm": {"name": REALM_ID},
+    "types": ["NymoAsset"],
+    "orderBy": {"property": "CREATED_ON", "descending": True},
+}
 ASSET_URL = f"{BASE_URL}/api/{REALM_ID}/asset/{DEVICE_ID}"
 ATTRIBUTE_URL = f"{BASE_URL}/api/{REALM_ID}/asset/{DEVICE_ID}/attribute/{ATTRIBUTE_NAME}"
 
@@ -147,6 +154,46 @@ async def test_get_asset_data_auth_error(
     assert client._access_token is None
 
 
+async def test_get_assets_success(
+    mock_session: MockSession, client: SolyxEnergyApiClient,
+) -> None:
+    """A successful query returns the list of assets and sends the expected request."""
+    mock_session.add_response("POST", ASSETS_URL, payload=ASSETS_PAYLOAD)
+    result = await client.async_get_assets()
+    assert result == ASSETS_PAYLOAD
+    request = mock_session.requests[-1][2]
+    assert request["headers"]["Authorization"] == "Bearer valid-token"
+    assert request["json"] == ASSETS_QUERY
+
+
+async def test_get_assets_error(
+    mock_session: MockSession, client: SolyxEnergyApiClient,
+) -> None:
+    """A 5xx response while querying assets raises SolyxEnergyDataError."""
+    mock_session.add_response("POST", ASSETS_URL, status=500)
+    with pytest.raises(SolyxEnergyDataError):
+        await client.async_get_assets()
+
+
+async def test_get_assets_auth_error(
+    mock_session: MockSession, client: SolyxEnergyApiClient,
+) -> None:
+    """A 401 while querying assets clears the cached token."""
+    mock_session.add_response("POST", ASSETS_URL, status=401)
+    with pytest.raises(SolyxEnergyAuthError):
+        await client.async_get_assets()
+    assert client._access_token is None
+
+
+async def test_get_assets_invalid_response(
+    mock_session: MockSession, client: SolyxEnergyApiClient,
+) -> None:
+    """A non-list payload raises SolyxEnergyDataError."""
+    mock_session.add_response("POST", ASSETS_URL, payload=ASSET_PAYLOAD)
+    with pytest.raises(SolyxEnergyDataError):
+        await client.async_get_assets()
+
+
 async def test_set_asset_attribute_success(
     mock_session: MockSession, client: SolyxEnergyApiClient,
 ) -> None:
@@ -180,6 +227,6 @@ async def test_set_asset_attribute_auth_error(
 async def test_test_connection_success(
     mock_session: MockSession, client: SolyxEnergyApiClient,
 ) -> None:
-    """async_test_connection validates credentials by fetching asset data."""
-    mock_session.add_response("GET", ASSET_URL, payload=ASSET_PAYLOAD)
-    await client.async_test_connection(DEVICE_ID)
+    """async_test_connection validates credentials by querying the user's assets."""
+    mock_session.add_response("POST", ASSETS_URL, payload=ASSETS_PAYLOAD)
+    await client.async_test_connection()

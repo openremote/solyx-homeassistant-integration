@@ -2,13 +2,13 @@
 
 from typing import TYPE_CHECKING, Any, override
 
+import probatio as vol
 from solyx_energy_api.client import SolyxEnergyApiClient
 from solyx_energy_api.exceptions import (
     SolyxEnergyAuthError,
     SolyxEnergyDataError,
     SolyxEnergyTokenError,
 )
-import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -141,4 +141,4 @@ class SolyxEnergyConfigFlow(ConfigFlow, domain=DOMAIN):
             base_url=BASE_URL,
             realm_id=REALM_ID,
         )
-        await client.async_test_connection(user_input[CONF_NYMO_DEVICE_ID])
+        await client.async_test_connection()
