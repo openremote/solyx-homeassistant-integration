@@ -29,7 +29,7 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 
 [tool.coverage.run]
-source = ["custom_components/solyx_energy", "libraries/api/solyx_energy_api"]
+source = ["custom_components/solyx_energy", "libraries/api/solyx_energy_api", "libraries/local-api/solyx_energy_local_api"]
 
 [tool.coverage.report]
 show_missing = true
@@ -83,7 +83,7 @@ mark-parentheses = false
 # Mypy configuration
 [tool.mypy]
 python_version = "3.14"
-mypy_path = ["libraries/api"] # reference local packages
+mypy_path = ["libraries/api", "libraries/local-api"] # reference local packages
 strict = true
 warn_return_any = true
 warn_unused_configs = true
