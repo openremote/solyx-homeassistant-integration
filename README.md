@@ -33,6 +33,30 @@ Installation steps:
 9. Copy the Client ID, Client Secret and Nymo device ID from the Solyx Energy app, and paste them in here.
 10. Press **Submit**, and you're good to go!
 
+## Solyx Energy Local
+
+`custom_components/solyx_energy_local` connects to the Nymo over the home
+network instead of the Solyx Energy cloud. It shows the same sensors as the
+cloud integration, read from the local API of the Sensorbox.
+
+Requirements:
+- Sensorbox firmware with the local API.
+- The access token and certificate fingerprint, shown in the Solyx Energy app.
+
+Home Assistant finds the Nymo on the network by itself (mDNS, `_solyx._tcp`)
+and only asks for the access token and certificate fingerprint. It can also be
+added by hand with its address, for example `solyx-a1b2c3.local`. The
+certificate fingerprint pins the self-signed certificate of the Sensorbox; the
+token is never sent to a device that presents another certificate.
+
+Besides the sensors of the cloud integration, it can control the Nymo while
+local control is turned on in the Solyx Energy app:
+
+| Entity | Description |
+|--------|-------------|
+| Operating mode (`select`) | Normal, muted or direct |
+| Power level (`number`) | Power of direct mode, 0-100 %; sent right away in direct mode, otherwise used when switching to it |
+
 ## Development
 
 ```bash
