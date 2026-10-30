@@ -1,0 +1,16 @@
+# Home Assistant configuration for developing the integrations; see scripts/develop.
+# Only what is needed here instead of default_config: its Bluetooth integration gets
+# Home Assistant killed on macOS, where it runs without Bluetooth permission.
+frontend:
+config:
+history:
+logbook:
+energy:
+zeroconf:
+
+logger:
+  default: info
+  logs:
+    custom_components.solyx_energy: debug
+    custom_components.solyx_energy_local: debug
+    solyx_energy_api: debug

@@ -13,3 +13,6 @@ build/
 .coverage
 .coverage.*
 htmlcov/
+# Home Assistant development instance (scripts/develop); only the configuration is kept
+config/*
+!config/configuration.yaml

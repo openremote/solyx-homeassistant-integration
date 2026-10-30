@@ -78,6 +78,18 @@ mypy libraries/api/solyx_energy_api libraries/local-api/solyx_energy_local_api c
 The API package is published separately and is installed by Home Assistant
 through the integration requirement in `manifest.json`.
 
+### Running Home Assistant
+
+`scripts/develop` starts Home Assistant on http://localhost:8123 with the
+integrations from this repository, using the configuration in `config/`.
+Restart it to pick up code changes.
+
+The repository includes a devcontainer (`.devcontainer/`) that installs
+everything with `scripts/setup`. Inside a container, Home Assistant cannot see
+mDNS from your network, so add the Nymo by its IP address there. To test
+discovery, run `scripts/develop` directly on your machine after the install
+commands above.
+
 ## Publishing
 ### Publish the API package
 
