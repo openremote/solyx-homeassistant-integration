@@ -1,0 +1,112 @@
+{
+  "config": {
+    "flow_title": "Nymo {device_id}",
+    "abort": {
+      "already_configured": "Apparaat is al geconfigureerd",
+      "not_solyx_device": "Het gevonden apparaat is geen Solyx Energy Nymo.",
+      "reauth_successful": "Herauthenticatie geslaagd",
+      "wrong_device": "Het apparaat op dit adres is een andere Nymo."
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken",
+      "certificate_mismatch": "Het apparaat gebruikt een ander certificaat. Controleer de certificaatvingerafdruk in de Solyx Energy-app.",
+      "invalid_auth": "Ongeldige authenticatie",
+      "invalid_fingerprint": "De certificaatvingerafdruk moet uit 64 hexadecimale tekens bestaan."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "Host",
+          "token": "Toegangstoken",
+          "cert_sha256": "Certificaatvingerafdruk"
+        },
+        "data_description": {
+          "host": "De hostnaam of het IP-adres van de Nymo, bijvoorbeeld solyx-a1b2c3.local.",
+          "token": "Het toegangstoken uit de Solyx Energy-app.",
+          "cert_sha256": "De certificaatvingerafdruk (SHA-256) uit de Solyx Energy-app."
+        },
+        "description": "Stel je Nymo in om via het thuisnetwerk met Home Assistant te koppelen."
+      },
+      "zeroconf_confirm": {
+        "data": {
+          "token": "Toegangstoken",
+          "cert_sha256": "Certificaatvingerafdruk"
+        },
+        "data_description": {
+          "token": "Het toegangstoken uit de Solyx Energy-app.",
+          "cert_sha256": "De certificaatvingerafdruk (SHA-256) uit de Solyx Energy-app."
+        },
+        "description": "Nymo {device_id} is gevonden op {host}. Vul het toegangstoken en de certificaatvingerafdruk uit de Solyx Energy-app in."
+      },
+      "reauth_confirm": {
+        "data": {
+          "token": "Toegangstoken",
+          "cert_sha256": "Certificaatvingerafdruk"
+        },
+        "data_description": {
+          "token": "Het toegangstoken uit de Solyx Energy-app.",
+          "cert_sha256": "De certificaatvingerafdruk (SHA-256) uit de Solyx Energy-app."
+        },
+        "description": "Nymo {device_id} heeft de opgeslagen gegevens geweigerd. Vul het huidige toegangstoken en de certificaatvingerafdruk uit de Solyx Energy-app in.",
+        "title": "Solyx Energy Local opnieuw authenticeren"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_current": {
+        "name": "Stroomsterkte boiler"
+      },
+      "boiler_power": {
+        "name": "Verbruik boiler"
+      },
+      "boiler_voltage": {
+        "name": "Spanning boiler"
+      },
+      "days_since_maximum_temperature": {
+        "name": "Dagen sinds maximale temperatuur"
+      },
+      "grid_power": {
+        "name": "Stroom van het net"
+      },
+      "legionella_days": {
+        "name": "Legionelladagen"
+      },
+      "saved_this_month": {
+        "name": "Deze maand bespaard"
+      },
+      "saved_this_week": {
+        "name": "Deze week bespaard"
+      },
+      "saved_today": {
+        "name": "Vandaag bespaard"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "Vermogensniveau"
+      }
+    },
+    "select": {
+      "operating_mode": {
+        "name": "Werkingsmodus",
+        "state": {
+          "normal": "Normaal",
+          "muted": "Gedempt",
+          "direct": "Direct"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "local_control_disabled": {
+      "message": "Lokale bediening staat uit. Zet deze aan in de Solyx Energy-app om de Nymo te bedienen."
+    },
+    "authentication_failed": {
+      "message": "De Nymo heeft de opgeslagen gegevens geweigerd. Authenticeer de integratie opnieuw."
+    },
+    "set_operation_mode_failed": {
+      "message": "De werkingsmodus kon niet worden ingesteld. Probeer het zo opnieuw."
+    }
+  }
+}
