@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solyx-energy-local-api-client"
+version = "0.1.0"
+license = "MIT"
+license-files = ["LICENSE"]
+description = "Async client for the local API of the Solyx Energy Sensorbox"
+readme = "README.md"
+requires-python = ">=3.14.2"
+dependencies = [
+    "aiohttp>=3.11",
+    "yarl>=1.9",
+]
+
+[project.urls]
+Repository = "https://github.com/openremote/solyx-homeassistant-integration"
+Issues = "https://github.com/openremote/solyx-homeassistant-integration/issues"
+Source = "https://github.com/openremote/solyx-homeassistant-integration"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["solyx_energy_local_api*"]
+
+[tool.setuptools.package-data]
+solyx_energy_local_api = ["py.typed"]
