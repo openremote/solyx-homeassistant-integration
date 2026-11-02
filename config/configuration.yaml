@@ -14,3 +14,4 @@ logger:
     custom_components.solyx_energy: debug
     custom_components.solyx_energy_local: debug
     solyx_energy_api: debug
+    solyx_energy_local_api: debug

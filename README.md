@@ -84,6 +84,10 @@ through the integration requirement in `manifest.json`.
 integrations from this repository, using the configuration in `config/`.
 Restart it to pick up code changes.
 
+In VS Code, the **Home Assistant** launch configuration (`.vscode/launch.json`)
+runs the same under the debugger, so breakpoints in the integrations and the API
+packages work.
+
 The repository includes a devcontainer (`.devcontainer/`) that installs
 everything with `scripts/setup`. Inside a container, Home Assistant cannot see
 mDNS from your network, so add the Nymo by its IP address there. To test
