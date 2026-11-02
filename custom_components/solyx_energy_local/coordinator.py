@@ -26,7 +26,7 @@ from .const import DATA_INTERVAL_SECONDS, DEFAULT_DIRECT_PERCENT, DOMAIN
 
 if TYPE_CHECKING:
     from solyx_energy_local_api.client import SolyxEnergyLocalApiClient
-    from solyx_energy_local_api.models import LocalStatus
+    from solyx_energy_local_api.models import LocalInfo, LocalStatus
 
     from homeassistant.core import HomeAssistant
 
@@ -111,6 +111,18 @@ class SolyxEnergyLocalCoordinator(DataUpdateCoordinator[SolyxEnergyLocalData]):
         # The mode last set here or reported by the Sensorbox. The Sensorbox only reports a mode
         # once the Nymo confirmed it, which can take a while.
         self.requested_mode: OperationMode | None = None
+        # Identity and firmware versions, read once when the entry is set up.
+        self.info: LocalInfo | None = None
+
+    @override
+    async def _async_setup(self) -> None:
+        """Read the device info, which does not change while the Sensorbox runs."""
+        try:
+            self.info = await self.api_client.async_get_info()
+        except (SolyxEnergyAuthError, SolyxEnergyCertificateError) as err:
+            raise ConfigEntryAuthFailed(f"Auth error: {err}") from err
+        except SolyxEnergyDataError as err:
+            raise UpdateFailed(f"API error: {err}") from err
 
     @override
     async def _async_update_data(self) -> SolyxEnergyLocalData:

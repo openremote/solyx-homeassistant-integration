@@ -24,6 +24,10 @@ from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 from .const import CERT_SHA256, DEVICE_ID, HOST, TOKEN
 
 if TYPE_CHECKING:
+    from unittest.mock import AsyncMock
+
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+
     from homeassistant.core import HomeAssistant
 
 # Prevent the flow from actually setting up the full integration when an entry is created
@@ -74,11 +78,12 @@ async def test_user_flow_normalizes_fingerprint(hass: HomeAssistant) -> None:
 
 
 @pytest.mark.parametrize(("api_error", "error"), [
-    (SolyxEnergyAuthError, "invalid_auth"),
-    (SolyxEnergyCertificateError, "certificate_mismatch"),
-    (SolyxEnergyDataError, "cannot_connect"),
+    pytest.param(SolyxEnergyAuthError, "invalid_auth", id="rejected_token"),
+    pytest.param(SolyxEnergyCertificateError, "certificate_mismatch", id="changed_certificate"),
+    pytest.param(SolyxEnergyDataError, "cannot_connect", id="unreachable"),
+    pytest.param(RuntimeError, "unknown", id="unexpected"),
 ])
-async def test_user_flow_errors(hass: HomeAssistant, mock_api_client_class, api_error, error) -> None:
+async def test_user_flow_errors(hass: HomeAssistant, mock_api_client_class: AsyncMock, api_error: type[Exception], error: str) -> None:
     """Connection errors are shown on the form, and the flow recovers once they are fixed."""
     mock_api_client_class.async_test_connection.side_effect = api_error
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
@@ -91,7 +96,7 @@ async def test_user_flow_errors(hass: HomeAssistant, mock_api_client_class, api_
     assert result["type"] is FlowResultType.CREATE_ENTRY
 
 
-async def test_user_flow_invalid_fingerprint(hass: HomeAssistant, mock_api_client_class) -> None:
+async def test_user_flow_invalid_fingerprint(hass: HomeAssistant, mock_api_client_class: AsyncMock) -> None:
     """A fingerprint that is not 64 hex characters is reported on its field."""
     mock_api_client_class.config_flow_class.side_effect = ValueError
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
@@ -103,7 +108,7 @@ async def test_user_flow_invalid_fingerprint(hass: HomeAssistant, mock_api_clien
 
 
 @pytest.mark.usefixtures("mock_api_client_class")
-async def test_user_flow_already_configured(hass: HomeAssistant, mock_config_entry) -> None:
+async def test_user_flow_already_configured(hass: HomeAssistant, mock_config_entry: MockConfigEntry) -> None:
     """Setting up the same Nymo again aborts and updates its address."""
     mock_config_entry.add_to_hass(hass)
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
@@ -131,7 +136,7 @@ async def test_zeroconf_flow(hass: HomeAssistant) -> None:
     assert result["result"].unique_id == DEVICE_ID
 
 
-async def test_zeroconf_flow_error(hass: HomeAssistant, mock_api_client_class) -> None:
+async def test_zeroconf_flow_error(hass: HomeAssistant, mock_api_client_class: AsyncMock) -> None:
     """A rejected token is shown on the confirm form."""
     mock_api_client_class.async_test_connection.side_effect = SolyxEnergyAuthError
     result = await hass.config_entries.flow.async_init(
@@ -142,7 +147,7 @@ async def test_zeroconf_flow_error(hass: HomeAssistant, mock_api_client_class) -
     assert result["errors"] == {"base": "invalid_auth"}
 
 
-async def test_zeroconf_flow_wrong_device(hass: HomeAssistant, mock_api_client_class) -> None:
+async def test_zeroconf_flow_wrong_device(hass: HomeAssistant, mock_api_client_class: AsyncMock) -> None:
     """The flow aborts when another Nymo answers at the discovered address."""
     mock_api_client_class.async_test_connection.return_value = replace(
         mock_api_client_class.async_test_connection.return_value, device_id="AABBCCDDEEFF",
@@ -155,7 +160,7 @@ async def test_zeroconf_flow_wrong_device(hass: HomeAssistant, mock_api_client_c
     assert result["reason"] == "wrong_device"
 
 
-async def test_zeroconf_updates_address(hass: HomeAssistant, mock_config_entry) -> None:
+async def test_zeroconf_updates_address(hass: HomeAssistant, mock_config_entry: MockConfigEntry) -> None:
     """A Nymo that is already set up and shows up at a new address gets its address updated."""
     mock_config_entry.add_to_hass(hass)
     result = await hass.config_entries.flow.async_init(
@@ -176,7 +181,7 @@ async def test_zeroconf_without_device_id(hass: HomeAssistant) -> None:
 
 
 @pytest.mark.usefixtures("mock_api_client_class")
-async def test_reauth_flow(hass: HomeAssistant, mock_config_entry) -> None:
+async def test_reauth_flow(hass: HomeAssistant, mock_config_entry: MockConfigEntry) -> None:
     """New credentials are stored and the entry is reloaded."""
     mock_config_entry.add_to_hass(hass)
     result = await mock_config_entry.start_reauth_flow(hass)
@@ -194,7 +199,7 @@ async def test_reauth_flow(hass: HomeAssistant, mock_config_entry) -> None:
     }
 
 
-async def test_reauth_flow_error(hass: HomeAssistant, mock_config_entry, mock_api_client_class) -> None:
+async def test_reauth_flow_error(hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api_client_class: AsyncMock) -> None:
     """A rejected token during reauthentication is shown on the form."""
     mock_config_entry.add_to_hass(hass)
     mock_api_client_class.async_test_connection.side_effect = SolyxEnergyAuthError
@@ -204,7 +209,7 @@ async def test_reauth_flow_error(hass: HomeAssistant, mock_config_entry, mock_ap
     assert result["errors"] == {"base": "invalid_auth"}
 
 
-async def test_reauth_flow_wrong_device(hass: HomeAssistant, mock_config_entry, mock_api_client_class) -> None:
+async def test_reauth_flow_wrong_device(hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api_client_class: AsyncMock) -> None:
     """Reauthentication aborts when another Nymo answers at the stored address."""
     mock_config_entry.add_to_hass(hass)
     mock_api_client_class.async_test_connection.return_value = replace(
@@ -214,3 +219,17 @@ async def test_reauth_flow_wrong_device(hass: HomeAssistant, mock_config_entry, 
     result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input=CREDENTIALS)
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "wrong_device"
+
+
+@pytest.mark.usefixtures("mock_api_client_class")
+async def test_user_flow_during_discovery(hass: HomeAssistant) -> None:
+    """Setting up a Nymo by hand works while its discovery is still waiting for the user."""
+    discovery = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_ZEROCONF}, data=zeroconf_info(),
+    )
+    assert discovery["type"] is FlowResultType.FORM
+
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input=USER_INPUT)
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["result"].unique_id == DEVICE_ID

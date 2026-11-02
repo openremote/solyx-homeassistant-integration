@@ -1,5 +1,6 @@
 """Config flow for the Solyx Energy Local integration."""
 
+import logging
 from typing import TYPE_CHECKING, Any, override
 
 import probatio as vol
@@ -29,6 +30,8 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
     from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+
+_LOGGER = logging.getLogger(__name__)
 
 # The access token and certificate fingerprint are shown in the Solyx Energy app.
 CREDENTIALS_SCHEMA = {
@@ -61,7 +64,8 @@ class SolyxEnergyLocalConfigFlow(ConfigFlow, domain=DOMAIN):
             data = {**user_input, CONF_PORT: DEFAULT_PORT}
             device_id = await self._async_validate(data, errors)
             if device_id is not None:
-                await self.async_set_unique_id(device_id)
+                # Setting up by hand takes over from a discovery of the same Nymo.
+                await self.async_set_unique_id(device_id, raise_on_progress=False)
                 self._abort_if_unique_id_configured(updates={CONF_HOST: data[CONF_HOST]})
                 return self._async_create_entry(device_id, data)
 
@@ -169,6 +173,9 @@ class SolyxEnergyLocalConfigFlow(ConfigFlow, domain=DOMAIN):
             errors["base"] = "certificate_mismatch"
         except SolyxEnergyDataError:
             errors["base"] = "cannot_connect"
+        except Exception:
+            _LOGGER.exception("Unexpected error while connecting to the Sensorbox")
+            errors["base"] = "unknown"
         else:
             return info.device_id
         return None

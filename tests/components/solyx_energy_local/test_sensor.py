@@ -3,7 +3,10 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+)
 from solyx_energy_local_api.exceptions import SolyxEnergyDataError
 from solyx_energy_local_api.models import LocalStatus
 
@@ -17,6 +20,8 @@ from homeassistant.const import STATE_UNAVAILABLE
 from .const import DEVICE_ID
 
 if TYPE_CHECKING:
+    from unittest.mock import AsyncMock
+
     from freezegun.api import FrozenDateTimeFactory
 
     from homeassistant.core import HomeAssistant
@@ -24,23 +29,23 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.parametrize(("key", "expected"), [
-    ("boiler_current", ("6.0", "A", "current")),
-    ("boiler_power", ("1380.0", "W", "power")),
-    ("boiler_voltage", ("228.0", "V", "voltage")),
-    ("days_since_maximum_temperature", ("3.0", "d", "duration")),
-    ("grid_power", ("-320.0", "W", "power")),
-    ("legionella_days", ("7.0", "d", "duration")),
+    pytest.param("boiler_current", ("6.0", "A", "current"), id="boiler_current"),
+    pytest.param("boiler_power", ("1380.0", "W", "power"), id="boiler_power"),
+    pytest.param("boiler_voltage", ("228.0", "V", "voltage"), id="boiler_voltage"),
+    pytest.param("days_since_maximum_temperature", ("3.0", "d", "duration"), id="days_since_maximum_temperature"),
+    pytest.param("grid_power", ("-320.0", "W", "power"), id="grid_power"),
+    pytest.param("legionella_days", ("7.0", "d", "duration"), id="legionella_days"),
     # Whole kWh, rounded down like the Sensorbox reports them to the cloud
-    ("saved_this_month", ("41.0", "kWh", "energy")),
-    ("saved_this_week", ("9.0", "kWh", "energy")),
-    ("saved_today", ("1200.0", "Wh", "energy")),
+    pytest.param("saved_this_month", ("41.0", "kWh", "energy"), id="saved_this_month"),
+    pytest.param("saved_this_week", ("9.0", "kWh", "energy"), id="saved_this_week"),
+    pytest.param("saved_today", ("1200.0", "Wh", "energy"), id="saved_today"),
 ])
 async def test_sensor_states(
     hass: HomeAssistant,
     entity_registry: EntityRegistry,
-    init_integration,
-    key,
-    expected,
+    init_integration: MockConfigEntry,
+    key: str,
+    expected: tuple[str, str, str],
 ) -> None:
     """Each sensor has the value, unit and device class of the cloud integration."""
     entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, f"{DEVICE_ID}-{key}")
@@ -57,8 +62,8 @@ async def test_sensor_states(
 async def test_sensors_unavailable_when_unreachable(
     hass: HomeAssistant,
     entity_registry: EntityRegistry,
-    init_integration,
-    mock_api_client_class,
+    init_integration: MockConfigEntry,
+    mock_api_client_class: AsyncMock,
     freezer: FrozenDateTimeFactory,
 ) -> None:
     """The sensors become unavailable when the Sensorbox stops answering."""

@@ -11,7 +11,8 @@
       "cannot_connect": "Kan geen verbinding maken",
       "certificate_mismatch": "Het apparaat gebruikt een ander certificaat. Controleer de certificaatvingerafdruk in de Solyx Energy-app.",
       "invalid_auth": "Ongeldige authenticatie",
-      "invalid_fingerprint": "De certificaatvingerafdruk moet uit 64 hexadecimale tekens bestaan."
+      "invalid_fingerprint": "De certificaatvingerafdruk moet uit 64 hexadecimale tekens bestaan.",
+      "unknown": "Onverwachte fout"
     },
     "step": {
       "user": {
@@ -21,7 +22,7 @@
           "cert_sha256": "Certificaatvingerafdruk"
         },
         "data_description": {
-          "host": "De hostnaam of het IP-adres van de Nymo, bijvoorbeeld solyx-a1b2c3.local.",
+          "host": "De hostnaam of het IP-adres van de Nymo, bijvoorbeeld `solyx-a1b2c3.local`.",
           "token": "Het toegangstoken uit de Solyx Energy-app.",
           "cert_sha256": "De certificaatvingerafdruk (SHA-256) uit de Solyx Energy-app."
         },

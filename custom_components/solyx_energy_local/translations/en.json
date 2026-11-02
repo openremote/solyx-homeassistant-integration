@@ -11,7 +11,8 @@
       "cannot_connect": "Failed to connect",
       "certificate_mismatch": "The device presented a different certificate. Check the certificate fingerprint in the Solyx Energy app.",
       "invalid_auth": "Invalid authentication",
-      "invalid_fingerprint": "The certificate fingerprint must be 64 hexadecimal characters."
+      "invalid_fingerprint": "The certificate fingerprint must be 64 hexadecimal characters.",
+      "unknown": "Unexpected error"
     },
     "step": {
       "user": {
@@ -21,7 +22,7 @@
           "cert_sha256": "Certificate fingerprint"
         },
         "data_description": {
-          "host": "The hostname or IP address of the Nymo, for example solyx-a1b2c3.local.",
+          "host": "The hostname or IP address of the Nymo, for example `solyx-a1b2c3.local`.",
           "token": "The access token shown in the Solyx Energy app.",
           "cert_sha256": "The certificate fingerprint (SHA-256) shown in the Solyx Energy app."
         },

@@ -20,6 +20,10 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from .const import DEVICE_ID
 
 if TYPE_CHECKING:
+    from unittest.mock import AsyncMock
+
+    from pytest_homeassistant_custom_component.common import MockConfigEntry
+
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_registry import EntityRegistry
 
@@ -42,7 +46,7 @@ async def set_value(hass: HomeAssistant, entity: str, value: float) -> None:
     )
 
 
-def command_status(client, mode: OperationMode, percent: int | None) -> None:
+def command_status(client: AsyncMock, mode: OperationMode, percent: int | None) -> None:
     """Make the Sensorbox report the given mode as set locally."""
     status = client.async_get_status.return_value
     client.async_get_status.return_value = replace(
@@ -50,7 +54,7 @@ def command_status(client, mode: OperationMode, percent: int | None) -> None:
     )
 
 
-async def test_initial_state(hass: HomeAssistant, entity_registry: EntityRegistry, init_integration) -> None:
+async def test_initial_state(hass: HomeAssistant, entity_registry: EntityRegistry, init_integration: MockConfigEntry) -> None:
     """Before anything is set locally the mode is unknown, and direct mode uses 50 %."""
     mode = hass.states.get(entity_id(entity_registry, "select", "operating_mode"))
     assert mode is not None
@@ -64,7 +68,10 @@ async def test_initial_state(hass: HomeAssistant, entity_registry: EntityRegistr
 
 
 async def test_state_follows_the_sensorbox(
-    hass: HomeAssistant, entity_registry: EntityRegistry, mock_api_client_class, mock_config_entry,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    mock_api_client_class: AsyncMock,
+    mock_config_entry: MockConfigEntry,
 ) -> None:
     """The mode and power set locally, also by another client, are shown."""
     command_status(mock_api_client_class, OperationMode.DIRECT, 75)
@@ -78,12 +85,15 @@ async def test_state_follows_the_sensorbox(
 
 @pytest.mark.usefixtures("init_integration")
 @pytest.mark.parametrize("case", [
-    ("normal", OperationMode.NORMAL, None),
-    ("muted", OperationMode.MUTED, None),
-    ("direct", OperationMode.DIRECT, 50),
+    pytest.param(("normal", OperationMode.NORMAL, None), id="normal"),
+    pytest.param(("muted", OperationMode.MUTED, None), id="muted"),
+    pytest.param(("direct", OperationMode.DIRECT, 50), id="direct"),
 ])
 async def test_select_mode(
-    hass: HomeAssistant, entity_registry: EntityRegistry, mock_api_client_class, case,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    mock_api_client_class: AsyncMock,
+    case: tuple[str, OperationMode, int | None],
 ) -> None:
     """Selecting a mode sends it to the Sensorbox; direct mode sends the power level too."""
     option, mode, percent = case
@@ -95,7 +105,10 @@ async def test_select_mode(
 
 
 async def test_power_level_is_kept_for_direct_mode(
-    hass: HomeAssistant, entity_registry: EntityRegistry, init_integration, mock_api_client_class,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    init_integration: MockConfigEntry,
+    mock_api_client_class: AsyncMock,
 ) -> None:
     """A power level set outside direct mode is not sent, but used when switching to direct."""
     await set_value(hass, entity_id(entity_registry, "number", "power_level"), 30)
@@ -107,7 +120,10 @@ async def test_power_level_is_kept_for_direct_mode(
 
 
 async def test_power_level_in_direct_mode(
-    hass: HomeAssistant, entity_registry: EntityRegistry, mock_api_client_class, mock_config_entry,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    mock_api_client_class: AsyncMock,
+    mock_config_entry: MockConfigEntry,
 ) -> None:
     """In direct mode a new power level is sent right away."""
     command_status(mock_api_client_class, OperationMode.DIRECT, 50)
@@ -124,11 +140,18 @@ async def test_power_level_in_direct_mode(
 
 @pytest.mark.usefixtures("init_integration")
 @pytest.mark.parametrize("case", [
-    (SolyxEnergyLocalControlDisabledError, ServiceValidationError, "local_control_disabled"),
-    (SolyxEnergyWriteError, HomeAssistantError, "set_operation_mode_failed"),
+    pytest.param(
+        (SolyxEnergyLocalControlDisabledError, ServiceValidationError, "local_control_disabled"),
+        id="local_control_off",
+    ),
+    pytest.param((SolyxEnergyWriteError, HomeAssistantError, "set_operation_mode_failed"), id="refused"),
 ])
 async def test_select_errors(
-    hass: HomeAssistant, entity_registry: EntityRegistry, mock_api_client_class, case,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    mock_api_client_class: AsyncMock,
+    case: tuple[type[Exception],
+    type[HomeAssistantError], str],
 ) -> None:
     """Refused changes show a translated error, such as local control being off."""
     api_error, error, translation_key = case
@@ -139,7 +162,10 @@ async def test_select_errors(
 
 
 async def test_select_auth_error_starts_reauth(
-    hass: HomeAssistant, entity_registry: EntityRegistry, init_integration, mock_api_client_class,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    init_integration: MockConfigEntry,
+    mock_api_client_class: AsyncMock,
 ) -> None:
     """Rejected credentials while changing the mode start a reauth flow."""
     mock_api_client_class.async_set_operation_mode.side_effect = SolyxEnergyAuthError
@@ -153,7 +179,10 @@ async def test_select_auth_error_starts_reauth(
 
 
 async def test_power_level_sent_before_direct_mode_is_confirmed(
-    hass: HomeAssistant, entity_registry: EntityRegistry, init_integration, mock_api_client_class,
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    init_integration: MockConfigEntry,
+    mock_api_client_class: AsyncMock,
 ) -> None:
     """Right after selecting direct mode, a new power level is sent, also before the Nymo confirmed it."""
     await select_mode(hass, entity_id(entity_registry, "select", "operating_mode"), "direct")

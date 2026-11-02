@@ -7,7 +7,9 @@
   "documentation": "https://github.com/openremote/solyx-homeassistant-integration",
   "integration_type": "device",
   "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/openremote/solyx-homeassistant-integration/issues",
   "loggers": ["custom_components.solyx_energy_local", "solyx_energy_local_api"],
+  "quality_scale": "bronze",
   "requirements": ["solyx-energy-local-api-client==0.1.0"],
   "version": "0.1.0",
   "zeroconf": ["_solyx._tcp.local."]

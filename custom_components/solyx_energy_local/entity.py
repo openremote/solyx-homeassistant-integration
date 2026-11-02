@@ -40,6 +40,7 @@ class SolyxNymoEntity(CoordinatorEntity[SolyxEnergyLocalCoordinator]):
             manufacturer="Solyx Energy",
             model="Nymo",
             serial_number=device_id,
+            sw_version=coordinator.info.firmware_version if coordinator.info else None,
         )
         # The device ID is the Wi-Fi MAC of the Sensorbox; it links the device to its network entry.
         if _MAC_PATTERN.fullmatch(device_id):
