@@ -1,0 +1,112 @@
+{
+  "config": {
+    "flow_title": "Nymo {device_id}",
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "not_solyx_device": "The discovered device is not a Solyx Energy Nymo.",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
+      "wrong_device": "The device at this address is a different Nymo."
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "certificate_mismatch": "The device presented a different certificate. Check the certificate fingerprint in the Solyx Energy app.",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "invalid_fingerprint": "The certificate fingerprint must be 64 hexadecimal characters."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "[%key:common::config_flow::data::host%]",
+          "token": "[%key:common::config_flow::data::access_token%]",
+          "cert_sha256": "Certificate fingerprint"
+        },
+        "data_description": {
+          "host": "The hostname or IP address of the Nymo, for example solyx-a1b2c3.local.",
+          "token": "The access token shown in the Solyx Energy app.",
+          "cert_sha256": "The certificate fingerprint (SHA-256) shown in the Solyx Energy app."
+        },
+        "description": "Set up your Nymo to integrate with Home Assistant over the home network."
+      },
+      "zeroconf_confirm": {
+        "data": {
+          "token": "[%key:common::config_flow::data::access_token%]",
+          "cert_sha256": "Certificate fingerprint"
+        },
+        "data_description": {
+          "token": "The access token shown in the Solyx Energy app.",
+          "cert_sha256": "The certificate fingerprint (SHA-256) shown in the Solyx Energy app."
+        },
+        "description": "Nymo {device_id} was found at {host}. Enter the access token and certificate fingerprint shown in the Solyx Energy app."
+      },
+      "reauth_confirm": {
+        "data": {
+          "token": "[%key:common::config_flow::data::access_token%]",
+          "cert_sha256": "Certificate fingerprint"
+        },
+        "data_description": {
+          "token": "The access token shown in the Solyx Energy app.",
+          "cert_sha256": "The certificate fingerprint (SHA-256) shown in the Solyx Energy app."
+        },
+        "description": "Nymo {device_id} rejected the stored credentials. Enter the current access token and certificate fingerprint shown in the Solyx Energy app.",
+        "title": "Reauthenticate Solyx Energy Local"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "boiler_current": {
+        "name": "Boiler current"
+      },
+      "boiler_power": {
+        "name": "Boiler power"
+      },
+      "boiler_voltage": {
+        "name": "Boiler voltage"
+      },
+      "days_since_maximum_temperature": {
+        "name": "Days since maximum temperature"
+      },
+      "grid_power": {
+        "name": "Grid power"
+      },
+      "legionella_days": {
+        "name": "Days since last legionella prevention"
+      },
+      "saved_this_month": {
+        "name": "Saved this month"
+      },
+      "saved_this_week": {
+        "name": "Saved this week"
+      },
+      "saved_today": {
+        "name": "Saved today"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "Power level"
+      }
+    },
+    "select": {
+      "operating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "normal": "Normal",
+          "muted": "Muted",
+          "direct": "Direct"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "local_control_disabled": {
+      "message": "Local control is turned off. Turn it on in the Solyx Energy app to change the Nymo."
+    },
+    "authentication_failed": {
+      "message": "The Nymo rejected the stored credentials. Reauthenticate the integration."
+    },
+    "set_operation_mode_failed": {
+      "message": "The operating mode could not be set. Try again in a moment."
+    }
+  }
+}

@@ -33,6 +33,30 @@ Installation steps:
 9. Copy the Client ID, Client Secret and Nymo device ID from the Solyx Energy app, and paste them in here.
 10. Press **Submit**, and you're good to go!
 
+## Solyx Energy Local
+
+`custom_components/solyx_energy_local` connects to the Nymo over the home
+network instead of the Solyx Energy cloud. It shows the same sensors as the
+cloud integration, read from the local API of the Sensorbox.
+
+Requirements:
+- Sensorbox firmware with the local API.
+- The access token and certificate fingerprint, shown in the Solyx Energy app.
+
+Home Assistant finds the Nymo on the network by itself (mDNS, `_solyx._tcp`)
+and only asks for the access token and certificate fingerprint. It can also be
+added by hand with its address, for example `solyx-a1b2c3.local`. The
+certificate fingerprint pins the self-signed certificate of the Sensorbox; the
+token is never sent to a device that presents another certificate.
+
+Besides the sensors of the cloud integration, it can control the Nymo while
+local control is turned on in the Solyx Energy app:
+
+| Entity | Description |
+|--------|-------------|
+| Operating mode (`select`) | Normal, muted or direct |
+| Power level (`number`) | Power of direct mode, 0-100 %; sent right away in direct mode, otherwise used when switching to it |
+
 ## Development
 
 ```bash
@@ -53,6 +77,18 @@ mypy libraries/api/solyx_energy_api libraries/local-api/solyx_energy_local_api c
 
 The API package is published separately and is installed by Home Assistant
 through the integration requirement in `manifest.json`.
+
+### Running Home Assistant
+
+`scripts/develop` starts Home Assistant on http://localhost:8123 with the
+integrations from this repository, using the configuration in `config/`.
+Restart it to pick up code changes.
+
+The repository includes a devcontainer (`.devcontainer/`) that installs
+everything with `scripts/setup`. Inside a container, Home Assistant cannot see
+mDNS from your network, so add the Nymo by its IP address there. To test
+discovery, run `scripts/develop` directly on your machine after the install
+commands above.
 
 ## Publishing
 ### Publish the API package
