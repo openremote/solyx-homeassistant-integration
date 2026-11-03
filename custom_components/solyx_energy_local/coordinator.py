@@ -22,7 +22,12 @@ from homeassistant.exceptions import (
 )
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DATA_INTERVAL_SECONDS, DEFAULT_DIRECT_PERCENT, DOMAIN
+from .const import (
+    DATA_INTERVAL_SECONDS,
+    DEFAULT_DIRECT_PERCENT,
+    DOMAIN,
+    STALE_AFTER_SECONDS,
+)
 
 if TYPE_CHECKING:
     from solyx_energy_local_api.client import SolyxEnergyLocalApiClient
@@ -63,12 +68,23 @@ def _kilowatt_hours(watt_hours: int) -> float:
     return float(watt_hours // 1000)
 
 
+def _is_fresh(status: LocalStatus, age: int | None) -> bool:
+    """Whether the Sensorbox read the values recently from a Nymo that is connected.
+
+    The Sensorbox keeps serving the last values it read, so they go stale when the Nymo stops
+    answering.
+    """
+    return status.nymo.connected is not False and age is not None and age <= STALE_AFTER_SECONDS
+
+
 def to_cloud_values(status: LocalStatus) -> SolyxEnergyData:
-    """Map the local status to the values and units the Solyx Energy cloud reports."""
-    boiler = status.nymo.boiler
-    grid = status.nymo.grid
-    savings = status.savings
-    legionella = status.settings.legionella if status.settings else None
+    """Map the local status to the values and units the Solyx Energy cloud reports; stale values are None."""
+    nymo_fresh = _is_fresh(status, status.nymo.age)
+    boiler = status.nymo.boiler if nymo_fresh else None
+    grid = status.nymo.grid if nymo_fresh else None
+    savings = status.savings if status.savings and _is_fresh(status, status.savings.age) else None
+    settings = status.settings if status.settings and _is_fresh(status, status.settings.age) else None
+    legionella = settings.legionella if settings else None
     return SolyxEnergyData(
         boiler_current=boiler.current if boiler else None,
         boiler_power=float(boiler.power) if boiler else None,
