@@ -83,6 +83,25 @@ async def test_state_follows_the_sensorbox(
     assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "75"
 
 
+async def test_power_level_zero_is_refused(
+    hass: HomeAssistant,
+    entity_registry: EntityRegistry,
+    mock_api_client_class: AsyncMock,
+    mock_config_entry: MockConfigEntry,
+) -> None:
+    """Direct mode at 0 % would be normal mode on the Nymo, so 0 is not a valid power level."""
+    command_status(mock_api_client_class, OperationMode.DIRECT, 50)
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    with pytest.raises(ServiceValidationError):
+        await set_value(hass, entity_id(entity_registry, "number", "power_level"), 0)
+
+    mock_api_client_class.async_set_operation_mode.assert_not_awaited()
+    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "50"
+
+
 @pytest.mark.usefixtures("init_integration")
 @pytest.mark.parametrize("case", [
     pytest.param(("normal", OperationMode.NORMAL, None), id="normal"),
