@@ -32,4 +32,4 @@ jobs:
         run: ruff check .
 
       - name: Run mypy
-        run: mypy libraries/api/solyx_energy_api libraries/local-api/solyx_energy_local_api custom_components
+        run: mypy libraries/api/solyx_energy_api libraries/local-api/solyx_energy_local_api
