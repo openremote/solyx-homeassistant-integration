@@ -44,5 +44,5 @@ class SolyxOperatingModeSelect(SolyxNymoEntity, SelectEntity):
 
     @override
     async def async_select_option(self, option: str) -> None:
-        """Set the operating mode; direct mode uses the power of the power level."""
+        """Set the operating mode; direct mode uses 50 % of the boiler's power."""
         await self.coordinator.async_set_operation_mode(OperationMode(option.upper()))

@@ -8,8 +8,8 @@ DATA_INTERVAL_SECONDS = 30
 # Values the Sensorbox last read longer ago are stale: it missed at least three reads of the Nymo.
 STALE_AFTER_SECONDS = 120
 
-# The power of direct mode until the user sets one, as the Sensorbox uses by default.
-DEFAULT_DIRECT_PERCENT = 50
+# The power of direct mode, in percent of the boiler's power; Home Assistant always uses this one.
+DIRECT_PERCENT = 50
 
 # Config entry keys; the host, port and access token use the Home Assistant constants.
 CONF_CERT_SHA256 = "cert_sha256"

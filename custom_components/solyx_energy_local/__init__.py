@@ -13,7 +13,7 @@ from .coordinator import SolyxEnergyLocalConfigEntry, SolyxEnergyLocalCoordinato
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
-PLATFORMS: list[Platform] = [Platform.NUMBER, Platform.SELECT, Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.SELECT, Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: SolyxEnergyLocalConfigEntry) -> bool:

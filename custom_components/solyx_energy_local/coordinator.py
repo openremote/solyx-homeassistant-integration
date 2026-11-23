@@ -22,12 +22,7 @@ from homeassistant.exceptions import (
 )
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import (
-    DATA_INTERVAL_SECONDS,
-    DEFAULT_DIRECT_PERCENT,
-    DOMAIN,
-    STALE_AFTER_SECONDS,
-)
+from .const import DATA_INTERVAL_SECONDS, DIRECT_PERCENT, DOMAIN, STALE_AFTER_SECONDS
 
 if TYPE_CHECKING:
     from solyx_energy_local_api.client import SolyxEnergyLocalApiClient
@@ -122,8 +117,6 @@ class SolyxEnergyLocalCoordinator(DataUpdateCoordinator[SolyxEnergyLocalData]):
         self.api_client = api_client
         # The config entry's unique ID is the device ID reported by the Sensorbox.
         self.device_id: str = config_entry.unique_id or ""
-        # The power used for direct mode; kept so it can be set before switching to direct.
-        self.direct_percent = DEFAULT_DIRECT_PERCENT
         # The mode last set here or reported by the Sensorbox. The Sensorbox only reports a mode
         # once the Nymo confirmed it, which can take a while.
         self.requested_mode: OperationMode | None = None
@@ -153,17 +146,13 @@ class SolyxEnergyLocalCoordinator(DataUpdateCoordinator[SolyxEnergyLocalData]):
         command = status.command
         if command.operation_mode is not None:
             self.requested_mode = command.operation_mode
-        if command.operation_mode is OperationMode.DIRECT and command.power_percent is not None:
-            self.direct_percent = command.power_percent
         return SolyxEnergyLocalData(values=to_cloud_values(status), status=status)
 
-    async def async_set_operation_mode(self, mode: OperationMode, power_percent: int | None = None) -> None:
-        """Set the operating mode of the Nymo; direct mode uses the given or the kept power."""
-        if mode is OperationMode.DIRECT:
-            power_percent = self.direct_percent if power_percent is None else power_percent
+    async def async_set_operation_mode(self, mode: OperationMode) -> None:
+        """Set the operating mode of the Nymo; direct mode always uses DIRECT_PERCENT."""
         try:
             await self.api_client.async_set_operation_mode(
-                mode, power_percent if mode is OperationMode.DIRECT else None,
+                mode, DIRECT_PERCENT if mode is OperationMode.DIRECT else None,
             )
         except SolyxEnergyLocalControlDisabledError as err:
             raise ServiceValidationError(
@@ -179,9 +168,7 @@ class SolyxEnergyLocalCoordinator(DataUpdateCoordinator[SolyxEnergyLocalData]):
                 translation_domain=DOMAIN, translation_key="set_operation_mode_failed",
             ) from err
         self.requested_mode = mode
-        if power_percent is not None:
-            self.direct_percent = power_percent
-        # Show the new power level now; refreshes requested close together are delayed.
+        # Show the new mode now; refreshes requested close together are delayed.
         self.async_update_listeners()
         # The Sensorbox reports the mode once the Nymo confirmed it, which can take a while.
         await self.async_request_refresh()

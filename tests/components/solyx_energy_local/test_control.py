@@ -1,4 +1,4 @@
-"""Tests for controlling the Nymo: the operating mode select and the power level number."""
+"""Tests for controlling the Nymo: the operating mode select."""
 
 from dataclasses import replace
 from typing import TYPE_CHECKING
@@ -12,7 +12,6 @@ from solyx_energy_local_api.exceptions import (
 from solyx_energy_local_api.models import Command, OperationMode
 
 from custom_components.solyx_energy_local.const import DOMAIN
-from homeassistant.components.number import ATTR_VALUE, SERVICE_SET_VALUE
 from homeassistant.components.select import ATTR_OPTION, SERVICE_SELECT_OPTION
 from homeassistant.const import ATTR_ENTITY_ID, STATE_UNKNOWN
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
@@ -40,12 +39,6 @@ async def select_mode(hass: HomeAssistant, entity: str, option: str) -> None:
     )
 
 
-async def set_value(hass: HomeAssistant, entity: str, value: float) -> None:
-    await hass.services.async_call(
-        "number", SERVICE_SET_VALUE, {ATTR_ENTITY_ID: entity, ATTR_VALUE: value}, blocking=True,
-    )
-
-
 def command_status(client: AsyncMock, mode: OperationMode, percent: int | None) -> None:
     """Make the Sensorbox report the given mode as set locally."""
     status = client.async_get_status.return_value
@@ -55,16 +48,13 @@ def command_status(client: AsyncMock, mode: OperationMode, percent: int | None) 
 
 
 async def test_initial_state(hass: HomeAssistant, entity_registry: EntityRegistry, init_integration: MockConfigEntry) -> None:
-    """Before anything is set locally the mode is unknown, and direct mode uses 50 %."""
+    """Before anything is set locally the mode is unknown; there is no power level to set."""
     mode = hass.states.get(entity_id(entity_registry, "select", "operating_mode"))
     assert mode is not None
     assert mode.state == STATE_UNKNOWN
     assert mode.attributes["options"] == ["normal", "muted", "direct"]
 
-    value = hass.states.get(entity_id(entity_registry, "number", "power_level"))
-    assert value is not None
-    assert value.state == "50"
-    assert value.attributes["unit_of_measurement"] == "%"
+    assert entity_registry.async_get_entity_id("number", DOMAIN, f"{DEVICE_ID}-power_level") is None
 
 
 async def test_state_follows_the_sensorbox(
@@ -73,33 +63,30 @@ async def test_state_follows_the_sensorbox(
     mock_api_client_class: AsyncMock,
     mock_config_entry: MockConfigEntry,
 ) -> None:
-    """The mode and power set locally, also by another client, are shown."""
+    """The mode set locally, also by another client, is shown."""
     command_status(mock_api_client_class, OperationMode.DIRECT, 75)
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
     assert hass.states.get(entity_id(entity_registry, "select", "operating_mode")).state == "direct"
-    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "75"
 
 
-async def test_power_level_zero_is_refused(
+async def test_direct_mode_always_uses_half_power(
     hass: HomeAssistant,
     entity_registry: EntityRegistry,
     mock_api_client_class: AsyncMock,
     mock_config_entry: MockConfigEntry,
 ) -> None:
-    """Direct mode at 0 % would be normal mode on the Nymo, so 0 is not a valid power level."""
-    command_status(mock_api_client_class, OperationMode.DIRECT, 50)
+    """Direct mode is sent with 50 %, also when another client set the Nymo to another power."""
+    command_status(mock_api_client_class, OperationMode.DIRECT, 75)
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    with pytest.raises(ServiceValidationError):
-        await set_value(hass, entity_id(entity_registry, "number", "power_level"), 0)
+    await select_mode(hass, entity_id(entity_registry, "select", "operating_mode"), "direct")
 
-    mock_api_client_class.async_set_operation_mode.assert_not_awaited()
-    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "50"
+    mock_api_client_class.async_set_operation_mode.assert_awaited_once_with(OperationMode.DIRECT, 50)
 
 
 @pytest.mark.usefixtures("init_integration")
@@ -114,7 +101,7 @@ async def test_select_mode(
     mock_api_client_class: AsyncMock,
     case: tuple[str, OperationMode, int | None],
 ) -> None:
-    """Selecting a mode sends it to the Sensorbox; direct mode sends the power level too."""
+    """Selecting a mode sends it to the Sensorbox; direct mode is sent with 50 %."""
     option, mode, percent = case
     command_status(mock_api_client_class, mode, percent)
     await select_mode(hass, entity_id(entity_registry, "select", "operating_mode"), option)
@@ -123,38 +110,6 @@ async def test_select_mode(
     assert hass.states.get(entity_id(entity_registry, "select", "operating_mode")).state == option
 
 
-async def test_power_level_is_kept_for_direct_mode(
-    hass: HomeAssistant,
-    entity_registry: EntityRegistry,
-    init_integration: MockConfigEntry,
-    mock_api_client_class: AsyncMock,
-) -> None:
-    """A power level set outside direct mode is not sent, but used when switching to direct."""
-    await set_value(hass, entity_id(entity_registry, "number", "power_level"), 30)
-    mock_api_client_class.async_set_operation_mode.assert_not_awaited()
-    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "30"
-
-    await select_mode(hass, entity_id(entity_registry, "select", "operating_mode"), "direct")
-    mock_api_client_class.async_set_operation_mode.assert_awaited_once_with(OperationMode.DIRECT, 30)
-
-
-async def test_power_level_in_direct_mode(
-    hass: HomeAssistant,
-    entity_registry: EntityRegistry,
-    mock_api_client_class: AsyncMock,
-    mock_config_entry: MockConfigEntry,
-) -> None:
-    """In direct mode a new power level is sent right away."""
-    command_status(mock_api_client_class, OperationMode.DIRECT, 50)
-    mock_config_entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done()
-
-    command_status(mock_api_client_class, OperationMode.DIRECT, 80)
-    await set_value(hass, entity_id(entity_registry, "number", "power_level"), 80)
-
-    mock_api_client_class.async_set_operation_mode.assert_awaited_once_with(OperationMode.DIRECT, 80)
-    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "80"
 
 
 @pytest.mark.usefixtures("init_integration")
@@ -195,19 +150,3 @@ async def test_select_auth_error_starts_reauth(
     await hass.async_block_till_done()
     flows = hass.config_entries.flow.async_progress()
     assert [flow["step_id"] for flow in flows] == ["reauth_confirm"]
-
-
-async def test_power_level_sent_before_direct_mode_is_confirmed(
-    hass: HomeAssistant,
-    entity_registry: EntityRegistry,
-    init_integration: MockConfigEntry,
-    mock_api_client_class: AsyncMock,
-) -> None:
-    """Right after selecting direct mode, a new power level is sent, also before the Nymo confirmed it."""
-    await select_mode(hass, entity_id(entity_registry, "select", "operating_mode"), "direct")
-    await set_value(hass, entity_id(entity_registry, "number", "power_level"), 70)
-
-    assert mock_api_client_class.async_set_operation_mode.await_args_list[-1].args == (OperationMode.DIRECT, 70)
-    assert hass.states.get(entity_id(entity_registry, "number", "power_level")).state == "70"
-    # The Sensorbox has not reported the new mode yet.
-    assert hass.states.get(entity_id(entity_registry, "select", "operating_mode")).state == STATE_UNKNOWN

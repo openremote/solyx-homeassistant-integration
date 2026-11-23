@@ -83,11 +83,6 @@
         "name": "Vandaag bespaard"
       }
     },
-    "number": {
-      "power_level": {
-        "name": "Vermogensniveau"
-      }
-    },
     "select": {
       "operating_mode": {
         "name": "Werkingsmodus",

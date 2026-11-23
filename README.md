@@ -54,8 +54,7 @@ local control is turned on in the Solyx Energy app:
 
 | Entity | Description |
 |--------|-------------|
-| Operating mode (`select`) | Normal, muted or direct |
-| Power level (`number`) | Power of direct mode, 1-100 % (direct mode at 0 % would be normal mode); sent right away in direct mode, otherwise used when switching to it |
+| Operating mode (`select`) | Normal, muted or direct; direct mode heats with 50 % of the boiler's power |
 
 ## Development
 
