@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Run Home Assistant on http://localhost:8123 with the integrations from this repository.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+mkdir -p config
+# Home Assistant finds custom_components in the repository root through PYTHONPATH,
+# so changes are picked up on a restart without copying files.
+export PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}${PWD}"
+
+exec hass --config "${PWD}/config" --debug "$@"

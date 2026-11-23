@@ -114,7 +114,7 @@ class SolyxEnergyLocalApiClient:
     async def async_set_operation_mode(
         self, mode: OperationMode, power_percent: int | None = None,
     ) -> None:
-        """Set the operation mode; DIRECT takes a power percentage (0-100, default 50).
+        """Set the operation mode; DIRECT takes a power percentage (1-100, default 50).
 
         Needs local control to be turned on in the Solyx Energy app.
         """

@@ -29,7 +29,7 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 
 [tool.coverage.run]
-source = ["custom_components/solyx_energy", "libraries/api/solyx_energy_api", "libraries/local-api/solyx_energy_local_api"]
+source = ["custom_components/solyx_energy", "custom_components/solyx_energy_local", "libraries/api/solyx_energy_api", "libraries/local-api/solyx_energy_local_api"]
 
 [tool.coverage.report]
 show_missing = true
